@@ -1,0 +1,67 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "insightEnvironment": {
+      "type": "object"
+    },
+    "storageAccount": {
+      "type": "object"
+    }
+  },
+  "variables": {
+    "timeSeriesInsightApiVersion": "2020-05-15",
+    "storageApiVersion": "2021-04-01"
+  },
+  "functions": [
+  ],
+  "resources": [
+    {
+      "type": "Microsoft.TimeSeriesInsights/environments",
+      "name": "[parameters('insightEnvironment').name]",
+      "apiVersion": "[variables('timeSeriesInsightApiVersion')]",
+      "location": "[resourceGroup().location]",
+      "kind": "[parameters('insightEnvironment').tier.type]",
+      "sku": {
+        "name": "[parameters('insightEnvironment').tier.name]",
+        "capacity": "[parameters('insightEnvironment').tier.units]"
+      },
+      "properties": {
+        "timeSeriesIdProperties": "[parameters('insightEnvironment').timeSeriesId]",
+        "storageConfiguration": {
+          "accountName": "[parameters('storageAccount').name]",
+          "managementKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccount').name), variables('storageApiVersion')).keys[0].value]"
+        },
+        "warmStoreConfiguration": {
+          "dataRetention": "[parameters('insightEnvironment').warmStorage.dataRetention]"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.TimeSeriesInsights/environments/accessPolicies",
+      "name": "[concat(parameters('insightEnvironment').name, '/', parameters('insightEnvironment').accessPolicies[copyIndex()].name)]",
+      "apiVersion": "[variables('timeSeriesInsightApiVersion')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.TimeSeriesInsights/environments', parameters('insightEnvironment').name)]"
+      ],
+      "properties": {
+        "roles": "[parameters('insightEnvironment').accessPolicies[copyIndex()].roles]",
+        "principalObjectId": "[parameters('insightEnvironment').accessPolicies[copyIndex()].principalId]"
+      },
+      "copy": {
+        "name": "accessPolicies",
+        "count": "[length(parameters('insightEnvironment').accessPolicies)]"
+      }
+    }
+  ],
+  "outputs": {
+    "insightEnvironment": {
+      "type": "object",
+      "value": {
+        "name": "[parameters('insightEnvironment').name]",
+        "resourceGroupName": "[resourceGroup().name]"
+      }
+    }
+  }
+}

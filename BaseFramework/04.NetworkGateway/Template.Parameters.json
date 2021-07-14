@@ -1,0 +1,46 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "virtualNetwork": {
+      "value": {
+        "name": "eva0",
+        "resourceGroupName": "EdgeVideoAnalyzer.Network",
+        "bgpSettings": {
+          "enabled": true,
+          "asNumber": 65515
+        },
+        "localGateway": {
+          "fqdn": "",
+          "publicAddress": "",
+          "addressPrefixes": [],
+          "bgpSettings": {
+            "asNumber": 0,
+            "peeringAddress": ""
+          }
+        }
+      }
+    },
+    "networkGateway": {
+      "value": {
+        "type": "Vpn",
+        "vpnGeneration": "Generation2",
+        "vpnTier": "VpnGw2",
+        "vpnType": "RouteBased",
+        "publicAddress": {
+          "type": "Basic",
+          "allocationMethod": "Dynamic"
+        },
+        "enableActiveActiveMode": false
+      }
+    },
+    "networkConnectionKey": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/3d07cfbc-17aa-41b4-baa1-488fef85a1d3/resourceGroups/EdgeVideoAnalyzer/providers/Microsoft.KeyVault/vaults/eva0"
+        },
+        "secretName": "networkConnectionKey"
+      }
+    }
+  }
+}

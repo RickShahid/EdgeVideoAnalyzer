@@ -1,0 +1,77 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "videoAnalyzer": {
+      "type": "object"
+    },
+    "managedIdentity": {
+      "type": "object"
+    },
+    "storageAccounts": {
+      "type": "array"
+    },
+    "baseTime": {
+      "type": "string",
+      "defaultValue": "[utcNow('u')]"
+    }
+  },
+  "variables": {
+    "videoAnalyzerApiVersion": "2021-05-01-preview",
+    "edgeModuleName": "avaedge",
+    "edgeModuleTokenExpiration": {
+      "expirationDate": "[dateTimeAdd(parameters('baseTime'), 'P7D', 'yyyy-MM-ddTHH:mm:ss+00:00')]"
+    }
+  },
+  "functions": [
+  ],
+  "resources": [
+    {
+      "type": "Microsoft.Media/videoAnalyzers",
+      "name": "[parameters('videoAnalyzer').name]",
+      "apiVersion": "[variables('videoAnalyzerApiVersion')]",
+      "location": "[resourceGroup().location]",
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "[resourceId(parameters('managedIdentity').resourceGroupName, 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentity').name)]": {
+          }
+        }
+      },
+      "properties": {
+        "copy": [
+          {
+            "name": "storageAccounts",
+            "count": "[length(parameters('storageAccounts'))]",
+            "input": {
+              "id": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts')[copyIndex('storageAccounts')].name)]",
+              "identity": {
+                "userAssignedIdentity": "[resourceId(parameters('managedIdentity').resourceGroupName, 'Microsoft.ManagedIdentity/userAssignedIdentities',parameters('managedIdentity').name)]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Media/videoAnalyzers/edgeModules",
+      "name": "[concat(parameters('videoAnalyzer').name, '/', variables('edgeModuleName'))]",
+      "apiVersion": "[variables('videoAnalyzerApiVersion')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Media/videoAnalyzers', parameters('videoAnalyzer').name)]"
+      ],
+      "properties": {
+      }
+    }
+  ],
+  "outputs": {
+    "analyzerEndpoints": {
+      "type": "array",
+      "value": "[reference(resourceId('Microsoft.Media/videoAnalyzers', parameters('videoAnalyzer').name), variables('videoAnalyzerApiVersion')).endpoints]"
+    },
+    "provisioningToken": {
+      "type": "string",
+      "value": "[listProvisioningToken(resourceId('Microsoft.Media/videoAnalyzers/edgeModules', parameters('videoAnalyzer').name, variables('edgeModuleName')), variables('videoAnalyzerApiVersion'), variables('edgeModuleTokenExpiration')).token]"
+    }
+  }
+}

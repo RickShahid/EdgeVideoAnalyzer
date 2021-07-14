@@ -1,0 +1,38 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "virtualNetwork": {
+      "value": {
+        "name": "eva0",
+        "addressPrefixes": [
+          "10.0.0.0/20"
+        ],
+        "subnets": [
+          {
+            "name": "IoT",
+            "properties": {
+              "addressPrefix": "10.0.0.0/21",
+              "privateEndpointNetworkPolicies": "Disabled",
+              "privateLinkServiceNetworkPolicies": "Disabled"
+            }
+          },
+          {
+            "name": "Storage",
+            "properties": {
+              "addressPrefix": "10.0.8.0/22",
+              "privateEndpointNetworkPolicies": "Disabled",
+              "privateLinkServiceNetworkPolicies": "Disabled"
+            }
+          },
+          {
+            "name": "GatewaySubnet",
+            "properties": {
+              "addressPrefix": "10.0.12.0/24"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

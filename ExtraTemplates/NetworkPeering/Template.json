@@ -1,0 +1,79 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "virtualNetwork1": {
+      "type": "object"
+    },
+    "virtualNetwork2": {
+      "type": "object"
+    }
+  },
+  "variables": {
+    "networkApiVersion": "2021-02-01"
+  },
+  "functions": [
+  ],
+  "resources": [
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "name": "[concat(parameters('virtualNetwork1').name, '/', parameters('virtualNetwork2').name)]",
+      "apiVersion": "[variables('networkApiVersion')]",
+      "location": "[parameters('virtualNetwork1').regionName]",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId(parameters('virtualNetwork2').resourceGroupName, 'Microsoft.Network/virtualNetworks', parameters('virtualNetwork2').name)]"
+        },
+        "remoteAddressSpace": {
+          "addressPrefixes": "[parameters('virtualNetwork2').remoteNetwork.addressPrefixes]"
+        },
+        "remoteBgpCommunities": {
+          "virtualNetworkCommunity": "[parameters('virtualNetwork1').remoteNetwork.bgpCommunity]"
+        },
+        "allowVirtualNetworkAccess": "[parameters('virtualNetwork1').remoteNetwork.allowVirtualNetworkAccess]",
+        "allowForwardedTraffic": "[parameters('virtualNetwork1').remoteNetwork.allowForwardedTraffic]",
+        "allowGatewayTransit": "[parameters('virtualNetwork1').remoteNetwork.allowGatewayTransit]",
+        "useRemoteGateways": "[parameters('virtualNetwork1').remoteNetwork.useRemoteGateways]"
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "name": "[concat(parameters('virtualNetwork2').name, '/', parameters('virtualNetwork1').name)]",
+      "apiVersion": "[variables('networkApiVersion')]",
+      "location": "[parameters('virtualNetwork2').regionName]",
+      "properties": {
+        "remoteVirtualNetwork": {
+          "id": "[resourceId(parameters('virtualNetwork1').resourceGroupName, 'Microsoft.Network/virtualNetworks', parameters('virtualNetwork1').name)]"
+        },
+        "remoteAddressSpace": {
+          "addressPrefixes": "[parameters('virtualNetwork1').remoteNetwork.addressPrefixes]"
+        },
+        "remoteBgpCommunities": {
+          "virtualNetworkCommunity": "[parameters('virtualNetwork2').remoteNetwork.bgpCommunity]"
+        },
+        "allowVirtualNetworkAccess": "[parameters('virtualNetwork2').remoteNetwork.allowVirtualNetworkAccess]",
+        "allowForwardedTraffic": "[parameters('virtualNetwork2').remoteNetwork.allowForwardedTraffic]",
+        "allowGatewayTransit": "[parameters('virtualNetwork2').remoteNetwork.allowGatewayTransit]",
+        "useRemoteGateways": "[parameters('virtualNetwork2').remoteNetwork.useRemoteGateways]"
+      }
+    }
+  ],
+  "outputs": {
+    "virtualNetwork1": {
+      "type": "object",
+      "value": {
+        "name": "[parameters('virtualNetwork1').name]",
+        "resourceGroupName": "[resourceGroup().name]",
+        "regionName": "[parameters('virtualNetwork1').regionName]"
+      }
+    },
+    "virtualNetwork2": {
+      "type": "object",
+      "value": {
+        "name": "[parameters('virtualNetwork2').name]",
+        "resourceGroupName": "[resourceGroup().name]",
+        "regionName": "[parameters('virtualNetwork2').regionName]"
+      }
+    }
+  }
+}

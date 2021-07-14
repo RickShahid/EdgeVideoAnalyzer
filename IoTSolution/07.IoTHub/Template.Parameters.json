@@ -1,0 +1,33 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "iotHub": {
+      "value": {
+        "name": "eva0",
+        "tier": {
+          "name": "S1",
+          "units": 1
+        },
+        "eventHub": {
+          "partitionCount": 4,
+          "dataRetentionDays": 7
+        }
+      }
+    },
+    "managedIdentity": {
+      "value": {
+        "name": "eva0",
+        "resourceGroupName": "EdgeVideoAnalyzer"
+      }
+    },
+    "virtualNetwork": {
+      "value": {
+        "name": "eva0",
+        "subnetName": "IoT",
+        "resourceGroupName": "EdgeVideoAnalyzer.Network",
+        "enableDnsAutoRegistration": true
+      }
+    }
+  }
+}

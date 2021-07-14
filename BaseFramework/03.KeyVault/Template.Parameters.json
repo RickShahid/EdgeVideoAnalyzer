@@ -1,0 +1,46 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "keyVault": {
+      "value": {
+        "name": "eva0",
+        "tier": "Standard",
+        "enableForDeployment": true,
+        "enableForDiskEncryption": true,
+        "enableForTemplateDeployment": true,
+        "enableRbacAuthorization": true,
+        "enablePurgeProtection": false,
+        "softDeleteRetentionDays": 90,
+        "roleAssignments": [
+          {
+            "roleName": "Key Vault Administrator",
+            "roleId": "00482a5a-887f-4fb3-b363-3b7fe8e74483",
+            "principalId": "ef54b085-8b87-4b95-b2a7-cbe762e5664f",
+            "principalType": "User"
+          },
+          {
+            "roleName": "Key Vault Secrets User",
+            "roleId": "4633458b-17de-408a-b874-0445c86b69e6",
+            "principalId": "e2865376-5bcd-452d-ba94-960623861665",
+            "principalType": "ServicePrincipal"
+          }
+        ],
+        "secrets": [
+          {
+            "name": "networkConnectionKey",
+            "value": "ChangeMe"
+          }
+        ]
+      }
+    },
+    "virtualNetwork": {
+      "value": {
+        "name": "eva0",
+        "subnetName": "IoT",
+        "resourceGroupName": "EdgeVideoAnalyzer.Network",
+        "enableDnsAutoRegistration": false
+      }
+    }
+  }
+}

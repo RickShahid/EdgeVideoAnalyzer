@@ -1,0 +1,50 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "storageAccount": {
+      "value": {
+        "name": "eva0",
+        "type": "StorageV2",
+        "replication": "Standard_LRS",
+        "enableHttpsTrafficOnly": true,
+        "enableAccountKeyAccess": true,
+        "enableBlobPublicAccess": false,
+        "enableHierarchialNamespace": true
+      }
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "roleName": "Reader",
+          "roleId": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
+          "principalId": "e2865376-5bcd-452d-ba94-960623861665",
+          "principalType": "ServicePrincipal"
+        },
+        {
+          "roleName": "Storage Blob Data Contributor",
+          "roleId": "ba92f5b4-2d11-453d-a403-e96b0029c9fe",
+          "principalId": "e2865376-5bcd-452d-ba94-960623861665",
+          "principalType": "ServicePrincipal"
+        }
+      ]
+    },
+    "blobContainers": {
+      "value": []
+    },
+    "messageQueues": {
+      "value": []
+    },
+    "fileShares": {
+      "value": []
+    },
+    "virtualNetwork": {
+      "value": {
+        "name": "eva0",
+        "subnetName": "Storage",
+        "resourceGroupName": "EdgeVideoAnalyzer.Network",
+        "enableDnsAutoRegistration": false
+      }
+    }
+  }
+}

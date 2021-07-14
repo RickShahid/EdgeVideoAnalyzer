@@ -1,0 +1,25 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "mediaAccount": {
+      "value": {
+        "name": "ava"
+      }
+    },
+    "storageAccounts": {
+      "value": [
+        {
+          "name": "ava01",
+          "type": "StorageV2",
+          "replication": "Standard_LRS"
+        },
+        {
+          "name": "ava02",
+          "type": "StorageV2",
+          "replication": "Standard_LRS"
+        }
+      ]
+    }
+  }
+}
