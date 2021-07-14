@@ -1,6 +1,6 @@
 # Edge Video Analyzer ([aka.ms/eva](https://aka.ms/eva))
 
-Edge Video Analyzer (EVA) is a modular set of parameterized [Azure Resource Manager (ARM)](https://docs.microsoft.com/azure/azure-resource-manager/management/overview) templates for the automated deployment of an end-to-end edge video AI solution in Microsoft Azure. Edge Video Analyzer provides a lightweight and customizable resource deployment framework based upon the [Azure Video Analyzer (AVA)](https://docs.microsoft.com/en-us/azure/azure-video-analyzer/video-analyzer-docs/overview) pipeline.
+The Edge Video Analyzer (EVA) solution is a modular set of parameterized [Azure Resource Manager (ARM)](https://docs.microsoft.com/azure/azure-resource-manager/management/overview) templates for the automated deployment of an end-to-end edge video AI solution in Microsoft Azure. Edge Video Analyzer provides a lightweight and customizable resource deployment framework based upon the [Azure Video Analyzer (AVA)](https://docs.microsoft.com/en-us/azure/azure-video-analyzer/video-analyzer-docs/overview) pipeline.
 
 ## Solution Architecture
 
