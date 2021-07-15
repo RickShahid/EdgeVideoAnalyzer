@@ -21,6 +21,12 @@
         "resourceGroupName": "EdgeVideoAnalyzer"
       }
     },
+    "insightEnvironment": {
+      "value": {
+        "name": "eva0",
+        "resourceGroupName": "EdgeVideoAnalyzer.Insight"
+      }
+    },
     "virtualNetwork": {
       "value": {
         "name": "eva0",

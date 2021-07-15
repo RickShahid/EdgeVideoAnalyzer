@@ -74,7 +74,7 @@
     },
     {
       "type": "Microsoft.Storage/storageAccounts/providers/roleAssignments",
-      "name": "[concat(parameters('storageAccount').name, '/Microsoft.Authorization/', guid(parameters('storageAccount').name, parameters('storageAccount').roleAssignments[copyIndex()].roleName))]",
+      "name": "[concat(parameters('storageAccount').name, '/Microsoft.Authorization/', guid(parameters('storageAccount').name, parameters('roleAssignments')[copyIndex()].roleName))]",
       "apiVersion": "[variables('roleAssignmentApiVersion')]",
       "location": "[resourceGroup().location]",
       "dependsOn":[
@@ -188,7 +188,7 @@
     },
     {
       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-      "name": "[concat(parameters('storageAccount').name, '/blob')]",
+      "name": "[concat(parameters('storageAccount').name, '/default')]",
       "apiVersion": "[variables('networkApiVersion')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
@@ -198,7 +198,7 @@
       "properties": {
         "privateDnsZoneConfigs": [
           {
-            "name": "primary",
+            "name": "[replace(variables('dnsZoneName'), '.', '-')]",
             "properties": {
               "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', variables('dnsZoneName'))]"
             }

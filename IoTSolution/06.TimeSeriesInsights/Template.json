@@ -60,7 +60,8 @@
       "type": "object",
       "value": {
         "name": "[parameters('insightEnvironment').name]",
-        "resourceGroupName": "[resourceGroup().name]"
+        "resourceGroupName": "[resourceGroup().name]",
+        "dataAccessFqdn": "[reference(resourceId('Microsoft.TimeSeriesInsights/environments', parameters('insightEnvironment').name)).dataAccessFqdn]"
       }
     }
   }

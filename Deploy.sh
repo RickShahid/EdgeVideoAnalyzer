@@ -69,9 +69,7 @@ templateResourcesPath="$modulePath/04.NetworkGateway/Template.json"
 templateParametersPath="$modulePath/04.NetworkGateway/Template.Parameters.json"
 
 virtualNetworkName=$(Get-PropertyValue "$virtualNetwork" .name false)
-virtualNetworkResourceGroupName=$(Get-PropertyValue "$virtualNetwork" .resourceGroupName false)
-Set-TemplateParameter $templateParametersPath "virtualNetwork" "name" $virtualNetworkName
-Set-TemplateParameter $templateParametersPath "virtualNetwork" "resourceGroupName" $virtualNetworkResourceGroupName
+Set-TemplateParameter $templateParametersPath "networkGateway" "name" $virtualNetworkName
 
 keyName="networkConnectionKey"
 keyVaultId=$(Get-PropertyValue "$keyVault" .resourceId false)
@@ -134,10 +132,15 @@ New-TraceMessage $moduleName false
 templateResourcesPath="$modulePath/07.IoTHub/Template.json"
 templateParametersPath="$modulePath/07.IoTHub/Template.Parameters.json"
 
-manageIdentityName=$(Get-PropertyValue "$manageIdentity" .name false)
-manageIdentityResourceGroupName=$(Get-PropertyValue "$manageIdentity" .resourceGroupName false)
-Set-TemplateParameter $templateParametersPath "manageIdentity" "name" $manageIdentityName
-Set-TemplateParameter $templateParametersPath "manageIdentity" "resourceGroupName" $manageIdentityResourceGroupName
+managedIdentityName=$(Get-PropertyValue "$managedIdentity" .name false)
+managedIdentityResourceGroupName=$(Get-PropertyValue "$managedIdentity" .resourceGroupName false)
+Set-TemplateParameter $templateParametersPath "managedIdentity" "name" $managedIdentityName
+Set-TemplateParameter $templateParametersPath "managedIdentity" "resourceGroupName" $managedIdentityResourceGroupName
+
+insightEnvironmentName=$(Get-PropertyValue "$insightEnvironment" .name false)
+insightEnvironmentResourceGroupName=$(Get-PropertyValue "$insightEnvironment" .resourceGroupName false)
+Set-TemplateParameter $templateParametersPath "insightEnvironment" "name" $insightEnvironmentName
+Set-TemplateParameter $templateParametersPath "insightEnvironment" "resourceGroupName" $insightEnvironmentResourceGroupName
 
 virtualNetworkName=$(Get-PropertyValue "$virtualNetwork" .name false)
 virtualNetworkResourceGroupName=$(Get-PropertyValue "$virtualNetwork" .resourceGroupName false)

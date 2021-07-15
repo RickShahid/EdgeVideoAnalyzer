@@ -126,7 +126,7 @@
     },
     {
       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-      "name": "[concat(parameters('keyVault').name, '/vault')]",
+      "name": "[concat(parameters('keyVault').name, '/default')]",
       "apiVersion": "[variables('networkApiVersion')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
@@ -136,7 +136,7 @@
       "properties": {
         "privateDnsZoneConfigs": [
           {
-            "name": "primary",
+            "name": "[replace(variables('dnsZoneName'), '.', '-')]",
             "properties": {
               "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', variables('dnsZoneName'))]"
             }

@@ -64,8 +64,7 @@ New-TraceMessage $moduleName $false
 $templateResourcesPath = "$modulePath/04.NetworkGateway/Template.json"
 $templateParametersPath = "$modulePath/04.NetworkGateway/Template.Parameters.json"
 
-Set-TemplateParameter $templateParametersPath "virtualNetwork" "name" $virtualNetwork.name
-Set-TemplateParameter $templateParametersPath "virtualNetwork" "resourceGroupName" $virtualNetwork.resourceGroupName
+Set-TemplateParameter $templateParametersPath "networkGateway" "name" $virtualNetwork.name
 
 $keyName = "networkConnectionKey"
 $keyVaultRef = New-Object PSObject
@@ -127,6 +126,9 @@ $templateParametersPath = "$modulePath/07.IoTHub/Template.Parameters.json"
 
 Set-TemplateParameter $templateParametersPath "managedIdentity" "name" $managedIdentity.name
 Set-TemplateParameter $templateParametersPath "managedIdentity" "resourceGroupName" $managedIdentity.resourceGroupName
+
+Set-TemplateParameter $templateParametersPath "insightEnvironment" "name" $insightEnvironment.name
+Set-TemplateParameter $templateParametersPath "insightEnvironment" "resourceGroupName" $insightEnvironment.resourceGroupName
 
 Set-TemplateParameter $templateParametersPath "virtualNetwork" "name" $virtualNetwork.name
 Set-TemplateParameter $templateParametersPath "virtualNetwork" "resourceGroupName" $virtualNetwork.resourceGroupName

@@ -2,9 +2,6 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "virtualNetwork": {
-      "type": "object"
-    },
     "networkGateway": {
       "type": "object"
     },
@@ -47,7 +44,7 @@
   "resources": [
     {
       "type": "Microsoft.Network/publicIPAddresses",
-      "name": "[fx.GetAddressName(parameters('virtualNetwork').name, variables('ipAddress1Suffix'), parameters('networkGateway').enableActiveActiveMode)]",
+      "name": "[fx.GetAddressName(parameters('networkGateway').name, variables('ipAddress1Suffix'), parameters('networkGateway').enableActiveActiveMode)]",
       "apiVersion": "[variables('networkApiVersion')]",
       "location": "[resourceGroup().location]",
       "sku": {
@@ -60,7 +57,7 @@
     {
       "condition": "[parameters('networkGateway').enableActiveActiveMode]",
       "type": "Microsoft.Network/publicIPAddresses",
-      "name": "[concat(parameters('virtualNetwork').name, variables('ipAddress2Suffix'))]",
+      "name": "[concat(parameters('networkGateway').name, variables('ipAddress2Suffix'))]",
       "apiVersion": "[variables('networkApiVersion')]",
       "location": "[resourceGroup().location]",
       "sku": {
@@ -72,12 +69,12 @@
     },
     {
       "type": "Microsoft.Network/virtualNetworkGateways",
-      "name": "[parameters('virtualNetwork').name]",
+      "name": "[parameters('networkGateway').name]",
       "apiVersion": "[variables('networkApiVersion')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/publicIPAddresses', fx.GetAddressName(parameters('virtualNetwork').name, variables('ipAddress1Suffix'), parameters('networkGateway').enableActiveActiveMode))]",
-        "[resourceId('Microsoft.Network/publicIPAddresses', concat(parameters('virtualNetwork').name, variables('ipAddress2Suffix')))]"
+        "[resourceId('Microsoft.Network/publicIPAddresses', fx.GetAddressName(parameters('networkGateway').name, variables('ipAddress1Suffix'), parameters('networkGateway').enableActiveActiveMode))]",
+        "[resourceId('Microsoft.Network/publicIPAddresses', concat(parameters('networkGateway').name, variables('ipAddress2Suffix')))]"
       ],
       "properties": {
         "sku": {
@@ -96,56 +93,56 @@
               "name": "[concat('ipConfig', add(copyIndex('ipConfigurations'), 1))]",
               "properties": {
                 "subnet": {
-                  "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetwork').name, 'GatewaySubnet')]"
+                  "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('networkGateway').name, 'GatewaySubnet')]"
                 },
                 "publicIPAddress": {
-                  "id": "[resourceId('Microsoft.Network/publicIPAddresses', if(equals(copyIndex('ipConfigurations'), 0), fx.GetAddressName(parameters('virtualNetwork').name, variables('ipAddress1Suffix'), parameters('networkGateway').enableActiveActiveMode), concat(parameters('virtualNetwork').name, variables('ipAddress2Suffix'))))]"
+                  "id": "[resourceId('Microsoft.Network/publicIPAddresses', if(equals(copyIndex('ipConfigurations'), 0), fx.GetAddressName(parameters('networkGateway').name, variables('ipAddress1Suffix'), parameters('networkGateway').enableActiveActiveMode), concat(parameters('networkGateway').name, variables('ipAddress2Suffix'))))]"
                 }
               }
             }
           }
         ],
-        "enableBgp": "[parameters('virtualNetwork').bgpSettings.enabled]",
+        "enableBgp": "[if(greater(parameters('networkGateway').bgpSettings.asNumber, 0), true(), false())]",
         "bgpSettings": {
-          "asn": "[parameters('virtualNetwork').bgpSettings.asNumber]"
+          "asn": "[parameters('networkGateway').bgpSettings.asNumber]"
         }
       }
     },
     {
-      "condition": "[or(not(equals(parameters('virtualNetwork').localGateway.publicAddress, '')), not(equals(parameters('virtualNetwork').localGateway.fqdn, '')))]",
+      "condition": "[or(not(equals(parameters('networkGateway').localGateway.publicAddress, '')), not(equals(parameters('networkGateway').localGateway.fqdn, '')))]",
       "type": "Microsoft.Network/localNetworkGateways",
-      "name": "[parameters('virtualNetwork').name]",
+      "name": "[parameters('networkGateway').name]",
       "apiVersion": "[variables('networkApiVersion')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/virtualNetworkGateways', parameters('virtualNetwork').name)]"
+        "[resourceId('Microsoft.Network/virtualNetworkGateways', parameters('networkGateway').name)]"
       ],
       "properties": {
-        "fqdn": "[parameters('virtualNetwork').localGateway.fqdn]",
-        "gatewayIpAddress": "[parameters('virtualNetwork').localGateway.publicAddress]",
+        "fqdn": "[parameters('networkGateway').localGateway.fqdn]",
+        "gatewayIpAddress": "[parameters('networkGateway').localGateway.publicAddress]",
         "localNetworkAddressSpace": {
-          "addressPrefixes": "[parameters('virtualNetwork').localGateway.addressPrefixes]"
+          "addressPrefixes": "[parameters('networkGateway').localGateway.addressPrefixes]"
         },
-        "bgpSettings": "[if(not(equals(parameters('virtualNetwork').localGateway.bgpSettings.asNumber, 0)), json(concat('{ \"asn\": ', parameters('virtualNetwork').localGateway.bgpSettings.asNumber, ', \"bgpPeeringAddress\": \"', parameters('virtualNetwork').localGateway.bgpSettings.peeringAddress, '\"}')), json('null'))]"
+        "bgpSettings": "[if(not(equals(parameters('networkGateway').localGateway.bgpSettings.asNumber, 0)), json(concat('{ \"asn\": ', parameters('networkGateway').localGateway.bgpSettings.asNumber, ', \"bgpPeeringAddress\": \"', parameters('networkGateway').localGateway.bgpSettings.peeringAddress, '\"}')), json('null'))]"
       }
     },
     {
-      "condition": "[or(not(equals(parameters('virtualNetwork').localGateway.publicAddress, '')), not(equals(parameters('virtualNetwork').localGateway.fqdn, '')))]",
+      "condition": "[or(not(equals(parameters('networkGateway').localGateway.publicAddress, '')), not(equals(parameters('networkGateway').localGateway.fqdn, '')))]",
       "type": "Microsoft.Network/connections",
-      "name": "[parameters('virtualNetwork').name]",
+      "name": "[parameters('networkGateway').name]",
       "apiVersion": "[variables('networkApiVersion')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/localNetworkGateways', parameters('virtualNetwork').name)]"
+        "[resourceId('Microsoft.Network/localNetworkGateways', parameters('networkGateway').name)]"
       ],
       "properties": {
         "connectionType": "IPsec",
         "sharedKey": "[parameters('networkConnectionKey')]",
         "virtualNetworkGateway1": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworkGateways', parameters('virtualNetwork').name)]"
+          "id": "[resourceId('Microsoft.Network/virtualNetworkGateways', parameters('networkGateway').name)]"
         },
         "localNetworkGateway2": {
-          "id": "[resourceId('Microsoft.Network/localNetworkGateways', parameters('virtualNetwork').name)]"
+          "id": "[resourceId('Microsoft.Network/localNetworkGateways', parameters('networkGateway').name)]"
         }
       }
     }
@@ -154,7 +151,7 @@
     "networkGateway": {
       "type": "object",
       "value": {
-        "name": "[parameters('virtualNetwork').name]",
+        "name": "[parameters('networkGateway').name]",
         "resourceGroupName": "[resourceGroup().name]"
       }
     }

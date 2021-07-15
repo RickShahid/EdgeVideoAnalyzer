@@ -18,13 +18,13 @@
         {
           "roleName": "Reader",
           "roleId": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
-          "principalId": "e2865376-5bcd-452d-ba94-960623861665",
+          "principalId": "f42dc2e0-4be4-48b9-9cf7-102f99805a8c",
           "principalType": "ServicePrincipal"
         },
         {
           "roleName": "Storage Blob Data Contributor",
           "roleId": "ba92f5b4-2d11-453d-a403-e96b0029c9fe",
-          "principalId": "e2865376-5bcd-452d-ba94-960623861665",
+          "principalId": "f42dc2e0-4be4-48b9-9cf7-102f99805a8c",
           "principalType": "ServicePrincipal"
         }
       ]

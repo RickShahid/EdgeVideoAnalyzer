@@ -8,17 +8,23 @@
     "managedIdentity": {
       "type": "object"
     },
+    "insightEnvironment": {
+      "type": "object"
+    },
     "virtualNetwork": {
       "type": "object"
     }
   },
   "variables": {
+    "iotHubKeyName": "iothubowner",
     "iotHubApiVersion": "2021-03-31",
     "iotSecurityApiVersion": "2019-08-01",
     "networkApiVersion": "2021-02-01",
     "dnsZoneApiVersion": "2020-06-01",
     "dnsZoneNameIotHub": "privatelink.azure-devices.net",
-    "dnsZoneNameServiceBus": "privatelink.servicebus.windows.net"
+    "dnsZoneNameServiceBus": "privatelink.servicebus.windows.net",
+    "resourceDeploymentApiVersion": "2021-01-01",
+    "timeSeriesInsightApiVersion": "2020-05-15"
   },
   "functions": [
   ],
@@ -160,6 +166,35 @@
             }
           }
         ]
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "name": "[concat(deployment().name, '.TimeSeriesInsights')]",
+      "apiVersion": "[variables('resourceDeploymentApiVersion')]",
+      "resourceGroup": "[parameters('insightEnvironment').resourceGroupName]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [
+            {
+              "type": "Microsoft.TimeSeriesInsights/environments/eventSources",
+              "name": "[concat(parameters('insightEnvironment').name, '/', parameters('iotHub').name)]",
+              "apiVersion": "[variables('timeSeriesInsightApiVersion')]",
+              "location": "[resourceGroup().location]",
+              "kind": "Microsoft.IoTHub",
+              "properties": {
+                "eventSourceResourceId": "[resourceId('Microsoft.Devices/iotHubs', parameters('iotHub').name)]",
+                "sharedAccessKey": "[listkeys(resourceId('Microsoft.Devices/iotHubs/iotHubKeys', parameters('iotHub').name, variables('iotHubKeyName')), variables('iotHubApiVersion')).primaryKey]",
+                "iotHubName": "[parameters('iotHub').name]",
+                "keyName": "[variables('iotHubKeyName')]",
+                "consumerGroupName": "$Default"
+              }
+            }
+          ]
+        }
       }
     }
   ],
