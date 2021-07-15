@@ -6,8 +6,8 @@ resourceGroupPrefix="" # Alphanumeric characters, periods, underscores, hyphens 
 modulePath=$(pwd)
 source "$modulePath/../../Shared/Functions.sh"
 
-# 10.VideoAnalyzer
-moduleName="10.VideoAnalyzer"
+# 08.VideoAnalyzer
+moduleName="08.VideoAnalyzer"
 New-TraceMessage $moduleName false
 
 templateResourcesPath="$modulePath/Template.json"

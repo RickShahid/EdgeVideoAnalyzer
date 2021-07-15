@@ -153,3 +153,30 @@ resourceDeployment=$(az deployment group create --name $moduleName --resource-gr
 iotHub=$(Get-PropertyValue "$resourceDeployment" .properties.outputs.iotHub.value false)
 
 New-TraceMessage $moduleName true
+
+# 08.VideoAnalyzer
+moduleName="08.VideoAnalyzer"
+New-TraceMessage $moduleName false
+
+templateResourcesPath="$modulePath/08.VideoAnalyzer/Template.json"
+templateParametersPath="$modulePath/08.VideoAnalyzer/Template.Parameters.json"
+
+managedIdentityName=$(Get-PropertyValue "$managedIdentity" .name false)
+managedIdentityResourceGroupName=$(Get-PropertyValue "$managedIdentity" .resourceGroupName false)
+Set-TemplateParameter $templateParametersPath "managedIdentity" "name" $managedIdentityName
+Set-TemplateParameter $templateParametersPath "managedIdentity" "resourceGroupName" $managedIdentityResourceGroupName
+
+keyVaultUri=$(Get-PropertyValue "$keyVault" .uri false)
+Set-TemplateParameter $templateParametersPath "keyVault" "uri" $keyVaultUri
+
+storageAccountName=$(Get-PropertyValue "$storageAccount" .name false)
+storageAccountResourceGroupName=$(Get-PropertyValue "$storageAccount" .resourceGroupName false)
+Set-TemplateParameter $templateParametersPath "storageAccounts" "name" $storageAccountName 0 true
+Set-TemplateParameter $templateParametersPath "storageAccounts" "resourceGroupName" $storageAccountResourceGroupName 0 true
+
+resourceGroupName=$(Set-ResourceGroup $regionName $resourceGroupPrefix ".IoT")
+
+resourceDeployment=$(az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file "$templateResourcesPath" --parameters "$templateParametersPath")
+videoAnalyzer=$(Get-PropertyValue "$resourceDeployment" .properties.outputs.videoAnalyzer.value false)
+
+New-TraceMessage $moduleName true

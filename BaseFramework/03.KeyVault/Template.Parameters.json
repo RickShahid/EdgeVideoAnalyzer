@@ -30,6 +30,10 @@
           {
             "name": "networkConnectionKey",
             "value": "ChangeMe"
+          },
+          {
+            "name": "videoAnalyzerKey",
+            "value": "ChangeMe"
           }
         ]
       }

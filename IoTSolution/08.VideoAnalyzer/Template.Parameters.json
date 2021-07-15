@@ -11,7 +11,12 @@
       "value": {
         "name": "eva0",
         "resourceGroupName": "EdgeVideoAnalyzer"
-    }
+      }
+    },
+    "keyVault": {
+      "value": {
+        "uri": "https://eva0.vault.azure.net/"
+      }
     },
     "storageAccounts": {
       "value": [

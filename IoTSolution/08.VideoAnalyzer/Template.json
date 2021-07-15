@@ -8,6 +8,9 @@
     "managedIdentity": {
       "type": "object"
     },
+    "keyVault": {
+      "type": "object"
+    },
     "storageAccounts": {
       "type": "array"
     },
@@ -50,7 +53,16 @@
               }
             }
           }
-        ]
+        ],
+        "encryption": {
+          "type": "CustomerKey",
+          "keyVaultProperties": {
+            "keyIdentifier": "[concat(parameters('keyVault').uri, '/keys/videoAnalyzerKey')]"
+          },
+          "identity": {
+            "userAssignedIdentity": "[resourceId(parameters('managedIdentity').resourceGroupName, 'Microsoft.ManagedIdentity/userAssignedIdentities',parameters('managedIdentity').name)]"
+          }
+        }
       }
     },
     {
@@ -65,13 +77,12 @@
     }
   ],
   "outputs": {
-    "analyzerEndpoints": {
-      "type": "array",
-      "value": "[reference(resourceId('Microsoft.Media/videoAnalyzers', parameters('videoAnalyzer').name), variables('videoAnalyzerApiVersion')).endpoints]"
-    },
-    "provisioningToken": {
-      "type": "string",
-      "value": "[listProvisioningToken(resourceId('Microsoft.Media/videoAnalyzers/edgeModules', parameters('videoAnalyzer').name, variables('edgeModuleName')), variables('videoAnalyzerApiVersion'), variables('edgeModuleTokenExpiration')).token]"
+    "videoAnalyzer": {
+      "type": "object",
+      "value": {
+        "endpoints": "[reference(resourceId('Microsoft.Media/videoAnalyzers', parameters('videoAnalyzer').name), variables('videoAnalyzerApiVersion')).endpoints]",
+        "provisioningToken": "[listProvisioningToken(resourceId('Microsoft.Media/videoAnalyzers/edgeModules', parameters('videoAnalyzer').name, variables('edgeModuleName')), variables('videoAnalyzerApiVersion'), variables('edgeModuleTokenExpiration')).token]"
+      }
     }
   }
 }

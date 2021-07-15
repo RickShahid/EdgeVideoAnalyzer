@@ -139,3 +139,25 @@ $resourceDeployment = (az deployment group create --name $moduleName --resource-
 $iotHub = $resourceDeployment.properties.outputs.iotHub.value
 
 New-TraceMessage $moduleName $true
+
+# 08.VideoAnalyzer
+$moduleName = "08.VideoAnalyzer"
+New-TraceMessage $moduleName $false
+
+$templateResourcesPath = "$modulePath/08.VideoAnalyzer/Template.json"
+$templateParametersPath = "$modulePath/08.VideoAnalyzer/Template.Parameters.json"
+
+Set-TemplateParameter $templateParametersPath "managedIdentity" "name" $managedIdentity.name
+Set-TemplateParameter $templateParametersPath "managedIdentity" "resourceGroupName" $managedIdentity.resourceGroupName
+
+Set-TemplateParameter $templateParametersPath "keyVault" "uri" $keyVault.uri
+
+Set-TemplateParameter $templateParametersPath "storageAccounts" "name" $storageAccount.name 0 $true
+Set-TemplateParameter $templateParametersPath "storageAccounts" "resourceGroupName" $storageAccount.resourceGroupName 0 $true
+
+$resourceGroupName = Set-ResourceGroup $regionName $resourceGroupPrefix ".IoT"
+
+$resourceDeployment = (az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file $templateResourcesPath --parameters $templateParametersPath) | ConvertFrom-Json
+$videoAnalyzer = $resourceDeployment.properties.outputs.videoAnalyzer.value
+
+New-TraceMessage $moduleName $true

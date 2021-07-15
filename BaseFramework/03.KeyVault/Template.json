@@ -151,7 +151,8 @@
       "value": {
         "name": "[parameters('keyVault').name]",
         "resourceGroupName": "[resourceGroup().name]",
-        "resourceId": "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVault').name)]"
+        "resourceId": "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVault').name)]",
+        "uri": "[reference(resourceId('Microsoft.KeyVault/vaults', parameters('keyVault').name), variables('keyVaultApiVersion')).vaultUri]"
       }
     }
   }
