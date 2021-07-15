@@ -22,7 +22,7 @@
           {
             "roleName": "Key Vault Secrets User",
             "roleId": "4633458b-17de-408a-b874-0445c86b69e6",
-            "principalId": "f42dc2e0-4be4-48b9-9cf7-102f99805a8c",
+            "principalId": "dc8735fe-6d10-403c-b9e0-ea7d6cc716eb",
             "principalType": "ServicePrincipal"
           }
         ],

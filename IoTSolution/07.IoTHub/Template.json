@@ -27,6 +27,23 @@
     "timeSeriesInsightApiVersion": "2020-05-15"
   },
   "functions": [
+    {
+      "namespace": "fx",
+      "members": {
+        "GetDnsZoneConfigName": {
+          "parameters": [
+            {
+              "name": "dnsZoneName",
+              "type": "string"
+            }
+          ],
+          "output": {
+            "type": "string",
+            "value": "[replace(parameters('dnsZoneName'), '.', '-')]"
+          }
+        }
+      }
+    }
   ],
   "resources": [
     {
@@ -122,7 +139,7 @@
       "apiVersion": "[variables('networkApiVersion')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[resourceId('Microsoft.Security/iotSecuritySolutions', parameters('iotHub').name)]"
+        "[resourceId('Microsoft.Devices/iotHubs', parameters('iotHub').name)]"
       ],
       "properties": {
         "subnet": {
@@ -154,13 +171,13 @@
       "properties": {
         "privateDnsZoneConfigs": [
           {
-            "name": "[replace(variables('dnsZoneNameIotHub'), '.', '-')]",
+            "name": "[fx.GetDnsZoneConfigName(variables('dnsZoneNameIotHub'))]",
             "properties": {
               "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', variables('dnsZoneNameIotHub'))]"
             }
           },
           {
-            "name": "[replace(variables('dnsZoneNameServiceBus'), '.', '-')]",
+            "name": "[fx.GetDnsZoneConfigName(variables('dnsZoneNameServiceBus'))]",
             "properties": {
               "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', variables('dnsZoneNameServiceBus'))]"
             }
