@@ -4,7 +4,7 @@
   "parameters": {
     "managedIdentity": {
       "value": {
-        "name": "eva0"
+        "name": "eva1"
       }
     }
   }

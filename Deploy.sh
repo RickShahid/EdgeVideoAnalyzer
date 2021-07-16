@@ -48,6 +48,7 @@ currentUserPrincipalId=$(Get-PropertyValue "$currentUser" .objectId false)
 managedIdentityPrincipalId=$(Get-PropertyValue "$managedIdentity" .principalId false)
 Set-TemplateParameter $templateParametersPath "keyVault" "roleAssignments.principalId" $currentUserPrincipalId 0
 Set-TemplateParameter $templateParametersPath "keyVault" "roleAssignments.principalId" $managedIdentityPrincipalId 1
+Set-TemplateParameter $templateParametersPath "keyVault" "roleAssignments.principalId" $managedIdentityPrincipalId 2
 
 virtualNetworkName=$(Get-PropertyValue "$virtualNetwork" .name false)
 virtualNetworkResourceGroupName=$(Get-PropertyValue "$virtualNetwork" .resourceGroupName false)
@@ -101,7 +102,7 @@ virtualNetworkResourceGroupName=$(Get-PropertyValue "$virtualNetwork" .resourceG
 Set-TemplateParameter $templateParametersPath "virtualNetwork" "name" $virtualNetworkName
 Set-TemplateParameter $templateParametersPath "virtualNetwork" "resourceGroupName" $virtualNetworkResourceGroupName
 
-resourceGroupName=$(Set-ResourceGroup $regionName $resourceGroupPrefix ".Insight")
+resourceGroupName=$(Set-ResourceGroup $regionName $resourceGroupPrefix ".Data")
 
 resourceDeployment=$(az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file "$templateResourcesPath" --parameters "$templateParametersPath")
 storageAccount=$(Get-PropertyValue "$resourceDeployment" .properties.outputs.storageAccount.value false)
@@ -118,7 +119,7 @@ templateParametersPath="$modulePath/06.TimeSeriesInsights/Template.Parameters.js
 storageAccountName=$(Get-PropertyValue "$storageAccount" .name false)
 Set-TemplateParameter $templateParametersPath "storageAccount" "name" $storageAccountName
 
-resourceGroupName=$(Set-ResourceGroup $regionName $resourceGroupPrefix ".Insight")
+resourceGroupName=$(Set-ResourceGroup $regionName $resourceGroupPrefix ".Data")
 
 resourceDeployment=$(az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file "$templateResourcesPath" --parameters "$templateParametersPath")
 insightEnvironment=$(Get-PropertyValue "$resourceDeployment" .properties.outputs.insightEnvironment.value false)
@@ -147,7 +148,7 @@ virtualNetworkResourceGroupName=$(Get-PropertyValue "$virtualNetwork" .resourceG
 Set-TemplateParameter $templateParametersPath "virtualNetwork" "name" $virtualNetworkName
 Set-TemplateParameter $templateParametersPath "virtualNetwork" "resourceGroupName" $virtualNetworkResourceGroupName
 
-resourceGroupName=$(Set-ResourceGroup $regionName $resourceGroupPrefix ".IoT")
+resourceGroupName=$(Set-ResourceGroup $regionName $resourceGroupPrefix ".Device")
 
 resourceDeployment=$(az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file "$templateResourcesPath" --parameters "$templateParametersPath")
 iotHub=$(Get-PropertyValue "$resourceDeployment" .properties.outputs.iotHub.value false)
@@ -166,15 +167,17 @@ managedIdentityResourceGroupName=$(Get-PropertyValue "$managedIdentity" .resourc
 Set-TemplateParameter $templateParametersPath "managedIdentity" "name" $managedIdentityName
 Set-TemplateParameter $templateParametersPath "managedIdentity" "resourceGroupName" $managedIdentityResourceGroupName
 
-keyVaultUri=$(Get-PropertyValue "$keyVault" .uri false)
-Set-TemplateParameter $templateParametersPath "keyVault" "uri" $keyVaultUri
+keyVaultName=$(Get-PropertyValue "$keyVault" .name false)
+keyVaultResourceGroupName=$(Get-PropertyValue "$keyVault" .resourceGroupName false)
+Set-TemplateParameter $templateParametersPath "keyVault" "name" $keyVaultName
+Set-TemplateParameter $templateParametersPath "keyVault" "resourceGroupName" $keyVaultResourceGroupName
 
 storageAccountName=$(Get-PropertyValue "$storageAccount" .name false)
 storageAccountResourceGroupName=$(Get-PropertyValue "$storageAccount" .resourceGroupName false)
 Set-TemplateParameter $templateParametersPath "storageAccounts" "name" $storageAccountName 0 true
 Set-TemplateParameter $templateParametersPath "storageAccounts" "resourceGroupName" $storageAccountResourceGroupName 0 true
 
-resourceGroupName=$(Set-ResourceGroup $regionName $resourceGroupPrefix ".IoT")
+resourceGroupName=$(Set-ResourceGroup $regionName $resourceGroupPrefix ".Pipeline")
 
 resourceDeployment=$(az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file "$templateResourcesPath" --parameters "$templateParametersPath")
 videoAnalyzer=$(Get-PropertyValue "$resourceDeployment" .properties.outputs.videoAnalyzer.value false)

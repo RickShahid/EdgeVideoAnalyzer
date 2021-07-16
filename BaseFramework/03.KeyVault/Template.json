@@ -12,7 +12,7 @@
   "variables": {
     "roleAssignmentApiVersion": "2021-04-01-preview",
     "keyVaultApiVersion": "2021-04-01-preview",
-    "networkApiVersion": "2021-02-01",
+    "networkApiVersion": "2021-03-01",
     "dnsZoneApiVersion": "2020-06-01",
     "dnsZoneName": "privatelink.vaultcore.azure.net"
   },
@@ -59,8 +59,25 @@
       }
     },
     {
+      "type":"Microsoft.KeyVault/vaults/keys",
+      "name": "[concat(parameters('keyVault').name, '/', parameters('keyVault').keys[copyIndex()].name)]",
+      "apiVersion": "[variables('keyVaultApiVersion')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn":[
+        "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVault').name)]"
+      ],
+      "properties": {
+        "kty": "[parameters('keyVault').keys[copyIndex()].type]",
+        "keySize": "[parameters('keyVault').keys[copyIndex()].size]"
+      },
+      "copy": {
+        "name": "keys",
+        "count": "[length(parameters('keyVault').keys)]"
+      }
+    },
+    {
       "type": "Microsoft.KeyVault/vaults/providers/roleAssignments",
-      "name": "[concat(parameters('keyVault').name, '/Microsoft.Authorization/', guid(parameters('keyVault').name, parameters('keyVault').roleAssignments[copyIndex()].roleName))]",
+      "name": "[concat(parameters('keyVault').name, '/Microsoft.Authorization/', guid(parameters('keyVault').roleAssignments[copyIndex()].roleId, parameters('keyVault').roleAssignments[copyIndex()].principalId))]",
       "apiVersion": "[variables('roleAssignmentApiVersion')]",
       "location": "[resourceGroup().location]",
       "dependsOn":[
@@ -151,8 +168,7 @@
       "value": {
         "name": "[parameters('keyVault').name]",
         "resourceGroupName": "[resourceGroup().name]",
-        "resourceId": "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVault').name)]",
-        "uri": "[reference(resourceId('Microsoft.KeyVault/vaults', parameters('keyVault').name), variables('keyVaultApiVersion')).vaultUri]"
+        "resourceId": "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVault').name)]"
       }
     }
   }

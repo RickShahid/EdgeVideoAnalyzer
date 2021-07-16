@@ -4,7 +4,7 @@
   "parameters": {
     "networkGateway": {
       "value": {
-        "name": "eva0",
+        "name": "eva1",
         "type": "Vpn",
         "vpnGeneration": "Generation2",
         "vpnTier": "VpnGw2",
@@ -31,7 +31,7 @@
     "networkConnectionKey": {
       "reference": {
         "keyVault": {
-          "id": "/subscriptions/3d07cfbc-17aa-41b4-baa1-488fef85a1d3/resourceGroups/EdgeVideoAnalyzer/providers/Microsoft.KeyVault/vaults/eva0"
+          "id": "/subscriptions/3d07cfbc-17aa-41b4-baa1-488fef85a1d3/resourceGroups/EdgeVideoAnalyzer/providers/Microsoft.KeyVault/vaults/eva1"
         },
         "secretName": "networkConnectionKey"
       }

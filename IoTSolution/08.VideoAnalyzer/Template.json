@@ -21,12 +21,30 @@
   },
   "variables": {
     "videoAnalyzerApiVersion": "2021-05-01-preview",
-    "edgeModuleName": "avaedge",
-    "edgeModuleTokenExpiration": {
+    "keyVaultApiVersion": "2021-04-01-preview",
+    "edgeModuleEnabled": "[not(equals(parameters('videoAnalyzer').edgeModule.name, ''))]",
+    "edgeModuleToken": {
       "expirationDate": "[dateTimeAdd(parameters('baseTime'), 'P7D', 'yyyy-MM-ddTHH:mm:ss+00:00')]"
     }
   },
   "functions": [
+    {
+      "namespace": "fx",
+      "members": {
+        "GetResourceName": {
+          "parameters": [
+            {
+              "name": "resource",
+              "type": "object"
+            }
+          ],
+          "output": {
+            "type": "string",
+            "value": "[if(equals(parameters('resource').name, ''), 'resource', parameters('resource').name)]"
+          }
+        }
+      }
+    }
   ],
   "resources": [
     {
@@ -47,7 +65,7 @@
             "name": "storageAccounts",
             "count": "[length(parameters('storageAccounts'))]",
             "input": {
-              "id": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts')[copyIndex('storageAccounts')].name)]",
+              "id": "[resourceId(parameters('storageAccounts')[copyIndex('storageAccounts')].resourceGroupName, 'Microsoft.Storage/storageAccounts', parameters('storageAccounts')[copyIndex('storageAccounts')].name)]",
               "identity": {
                 "userAssignedIdentity": "[resourceId(parameters('managedIdentity').resourceGroupName, 'Microsoft.ManagedIdentity/userAssignedIdentities',parameters('managedIdentity').name)]"
               }
@@ -57,7 +75,7 @@
         "encryption": {
           "type": "CustomerKey",
           "keyVaultProperties": {
-            "keyIdentifier": "[concat(parameters('keyVault').uri, '/keys/videoAnalyzerKey')]"
+            "keyIdentifier": "[reference(resourceId(parameters('keyVault').resourceGroupName, 'Microsoft.KeyVault/vaults/keys', parameters('keyVault').name, 'videoAnalyzerKey'), variables('keyVaultApiVersion')).keyUri]"
           },
           "identity": {
             "userAssignedIdentity": "[resourceId(parameters('managedIdentity').resourceGroupName, 'Microsoft.ManagedIdentity/userAssignedIdentities',parameters('managedIdentity').name)]"
@@ -66,8 +84,9 @@
       }
     },
     {
+      "condition": "[variables('edgeModuleEnabled')]",
       "type": "Microsoft.Media/videoAnalyzers/edgeModules",
-      "name": "[concat(parameters('videoAnalyzer').name, '/', variables('edgeModuleName'))]",
+      "name": "[concat(parameters('videoAnalyzer').name, '/', fx.GetResourceName(parameters('videoAnalyzer').edgeModule))]",
       "apiVersion": "[variables('videoAnalyzerApiVersion')]",
       "dependsOn": [
         "[resourceId('Microsoft.Media/videoAnalyzers', parameters('videoAnalyzer').name)]"
@@ -81,7 +100,7 @@
       "type": "object",
       "value": {
         "endpoints": "[reference(resourceId('Microsoft.Media/videoAnalyzers', parameters('videoAnalyzer').name), variables('videoAnalyzerApiVersion')).endpoints]",
-        "provisioningToken": "[listProvisioningToken(resourceId('Microsoft.Media/videoAnalyzers/edgeModules', parameters('videoAnalyzer').name, variables('edgeModuleName')), variables('videoAnalyzerApiVersion'), variables('edgeModuleTokenExpiration')).token]"
+        "provisioningToken": "[if(variables('edgeModuleEnabled'), listProvisioningToken(resourceId('Microsoft.Media/videoAnalyzers/edgeModules', parameters('videoAnalyzer').name, fx.GetResourceName(parameters('videoAnalyzer').edgeModule)), variables('videoAnalyzerApiVersion'), variables('edgeModuleToken')).token, '')]"
       }
     }
   }

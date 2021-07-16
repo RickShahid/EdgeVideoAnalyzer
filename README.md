@@ -22,7 +22,7 @@ The Edge Video Analyzer solution integrates the following Microsoft Azure servic
             <a href="https://docs.microsoft.com/azure/storage" target="_blank">Azure Storage</a>
         </td>
         <td>
-            <a href="https://docs.microsoft.com/en-us/azure/azure-video-analyzer/video-analyzer-docs/overview" target="_blank">Azure Video Analyzer</a>
+            <a href="https://docs.microsoft.com/en-us/azure/iot-dps/about-iot-dps" target="_blank">Azure IoT Hub Device Provisioning</a>
         </td>
     </tr>
     <tr>
@@ -35,8 +35,9 @@ The Edge Video Analyzer solution integrates the following Microsoft Azure servic
         <td>
             <a href="https://docs.microsoft.com/en-us/azure/time-series-insights/overview-what-is-tsi" target="_blank">Azure Time Series Insights</a>
         </td>
-        </td>
         <td>
+            <a href="https://docs.microsoft.com/en-us/azure/azure-video-analyzer/video-analyzer-docs/overview" target="_blank">Azure Video Analyzer</a>
+        </td>
     </tr>
     <tr>
         <td>

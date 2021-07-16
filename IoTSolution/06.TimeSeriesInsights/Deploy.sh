@@ -17,7 +17,7 @@ currentUser=$(az ad signed-in-user show)
 currentUserPrincipalId=$(Get-PropertyValue "$currentUser" .objectId false)
 Set-TemplateParameter $templateParametersPath "insightEnvironment" "accessPolicies.principalId" $currentUserPrincipalId 0
 
-resourceGroupName=$(Set-ResourceGroup $regionName $resourceGroupPrefix ".Insight")
+resourceGroupName=$(Set-ResourceGroup $regionName $resourceGroupPrefix ".Data")
 
 az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file "$templateResourcesPath" --parameters "$templateParametersPath"
 

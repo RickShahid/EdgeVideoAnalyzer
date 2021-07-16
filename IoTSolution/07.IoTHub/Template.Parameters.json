@@ -4,35 +4,45 @@
   "parameters": {
     "iotHub": {
       "value": {
-        "name": "eva0",
+        "name": "eva1",
         "tier": {
           "name": "S1",
           "units": 1
         },
         "eventHub": {
           "partitionCount": 4,
-          "dataRetentionDays": 7
-        }
+          "dataRetentionDays": 7,
+          "consumerGroupName": "videoAnalyzer"
+        },
+        "deviceProvisioning": {
+          "tier": {
+            "name": "S1",
+            "units": 1
+          },
+          "allocationPolicy": "Hashed",
+          "enableDnsAutoRegistration": true
+        },
+        "keyName": "iothubowner"
       }
     },
     "managedIdentity": {
       "value": {
-        "name": "eva0",
+        "name": "eva1",
         "resourceGroupName": "EdgeVideoAnalyzer"
       }
     },
     "insightEnvironment": {
       "value": {
-        "name": "eva0",
-        "resourceGroupName": "EdgeVideoAnalyzer.Insight"
+        "name": "eva1",
+        "resourceGroupName": "EdgeVideoAnalyzer.Data",
+        "timestampPropertyName": "eventTime"
       }
     },
     "virtualNetwork": {
       "value": {
-        "name": "eva0",
-        "subnetName": "IoT",
-        "resourceGroupName": "EdgeVideoAnalyzer.Network",
-        "enableDnsAutoRegistration": true
+        "name": "eva1",
+        "subnetName": "Device",
+        "resourceGroupName": "EdgeVideoAnalyzer.Network"
       }
     }
   }

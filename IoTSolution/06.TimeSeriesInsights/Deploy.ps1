@@ -16,7 +16,7 @@ $templateParametersPath = "$modulePath/Template.Parameters.json"
 $currentUser = (az ad signed-in-user show) | ConvertFrom-Json
 Set-TemplateParameter $templateParametersPath "insightEnvironment" "accessPolicies.principalId" $currentUser.objectId 0
 
-$resourceGroupName = Set-ResourceGroup $regionName $resourceGroupPrefix ".Insight"
+$resourceGroupName = Set-ResourceGroup $regionName $resourceGroupPrefix ".Data"
 
 az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file $templateResourcesPath --parameters $templateParametersPath
 

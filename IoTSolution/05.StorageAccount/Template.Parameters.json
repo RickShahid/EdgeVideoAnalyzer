@@ -4,7 +4,7 @@
   "parameters": {
     "storageAccount": {
       "value": {
-        "name": "eva0",
+        "name": "eva1",
         "type": "StorageV2",
         "replication": "Standard_LRS",
         "enableHttpsTrafficOnly": true,
@@ -18,13 +18,13 @@
         {
           "roleName": "Reader",
           "roleId": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
-          "principalId": "dc8735fe-6d10-403c-b9e0-ea7d6cc716eb",
+          "principalId": "7b4de3aa-6eb4-44cd-bdc5-8a1e54b07c79",
           "principalType": "ServicePrincipal"
         },
         {
           "roleName": "Storage Blob Data Contributor",
           "roleId": "ba92f5b4-2d11-453d-a403-e96b0029c9fe",
-          "principalId": "dc8735fe-6d10-403c-b9e0-ea7d6cc716eb",
+          "principalId": "7b4de3aa-6eb4-44cd-bdc5-8a1e54b07c79",
           "principalType": "ServicePrincipal"
         }
       ]
@@ -40,7 +40,7 @@
     },
     "virtualNetwork": {
       "value": {
-        "name": "eva0",
+        "name": "eva1",
         "subnetName": "Storage",
         "resourceGroupName": "EdgeVideoAnalyzer.Network",
         "enableDnsAutoRegistration": false

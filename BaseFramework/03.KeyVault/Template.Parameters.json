@@ -4,14 +4,14 @@
   "parameters": {
     "keyVault": {
       "value": {
-        "name": "eva0",
+        "name": "eva1",
         "tier": "Standard",
         "enableForDeployment": true,
         "enableForDiskEncryption": true,
         "enableForTemplateDeployment": true,
         "enableRbacAuthorization": true,
-        "enablePurgeProtection": false,
-        "softDeleteRetentionDays": 90,
+        "enablePurgeProtection": true,
+        "softDeleteRetentionDays": 7,
         "roleAssignments": [
           {
             "roleName": "Key Vault Administrator",
@@ -22,7 +22,13 @@
           {
             "roleName": "Key Vault Secrets User",
             "roleId": "4633458b-17de-408a-b874-0445c86b69e6",
-            "principalId": "dc8735fe-6d10-403c-b9e0-ea7d6cc716eb",
+            "principalId": "7b4de3aa-6eb4-44cd-bdc5-8a1e54b07c79",
+            "principalType": "ServicePrincipal"
+          },
+          {
+            "roleName": "Key Vault Crypto Service Encryption User",
+            "roleId": "e147488a-f6f5-4113-8e2d-b22465e65bf6",
+            "principalId": "7b4de3aa-6eb4-44cd-bdc5-8a1e54b07c79",
             "principalType": "ServicePrincipal"
           }
         ],
@@ -30,18 +36,21 @@
           {
             "name": "networkConnectionKey",
             "value": "ChangeMe"
-          },
+          }
+        ],
+        "keys": [
           {
             "name": "videoAnalyzerKey",
-            "value": "ChangeMe"
+            "type": "RSA",
+            "size": 4096
           }
         ]
       }
     },
     "virtualNetwork": {
       "value": {
-        "name": "eva0",
-        "subnetName": "IoT",
+        "name": "eva1",
+        "subnetName": "Device",
         "resourceGroupName": "EdgeVideoAnalyzer.Network",
         "enableDnsAutoRegistration": false
       }

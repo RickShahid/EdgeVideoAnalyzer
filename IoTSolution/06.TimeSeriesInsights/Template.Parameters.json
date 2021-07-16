@@ -4,7 +4,7 @@
   "parameters": {
     "insightEnvironment": {
       "value": {
-        "name": "eva0",
+        "name": "eva1",
         "tier": {
           "name": "L1",
           "type": "LongTerm",
@@ -33,7 +33,7 @@
     },
     "storageAccount": {
       "value": {
-        "name": "eva0"
+        "name": "eva1"
       }
     }
   }

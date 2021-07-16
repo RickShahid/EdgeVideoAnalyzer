@@ -7,7 +7,7 @@
     }
   },
   "variables": {
-    "networkApiVersion": "2021-02-01"
+    "networkApiVersion": "2021-03-01"
   },
   "functions": [
   ],

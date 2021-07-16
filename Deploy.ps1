@@ -46,6 +46,7 @@ $templateParametersPath = "$modulePath/03.KeyVault/Template.Parameters.json"
 $currentUser = (az ad signed-in-user show) | ConvertFrom-Json
 Set-TemplateParameter $templateParametersPath "keyVault" "roleAssignments.principalId" $currentUser.objectId 0
 Set-TemplateParameter $templateParametersPath "keyVault" "roleAssignments.principalId" $managedIdentity.principalId 1
+Set-TemplateParameter $templateParametersPath "keyVault" "roleAssignments.principalId" $managedIdentity.principalId 2
 
 Set-TemplateParameter $templateParametersPath "virtualNetwork" "name" $virtualNetwork.name
 Set-TemplateParameter $templateParametersPath "virtualNetwork" "resourceGroupName" $virtualNetwork.resourceGroupName
@@ -94,7 +95,7 @@ Set-TemplateParameter $templateParametersPath "roleAssignments" "principalId" $m
 Set-TemplateParameter $templateParametersPath "virtualNetwork" "name" $virtualNetwork.name
 Set-TemplateParameter $templateParametersPath "virtualNetwork" "resourceGroupName" $virtualNetwork.resourceGroupName
 
-$resourceGroupName = Set-ResourceGroup $regionName $resourceGroupPrefix ".Insight"
+$resourceGroupName = Set-ResourceGroup $regionName $resourceGroupPrefix ".Data"
 
 $resourceDeployment = (az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file $templateResourcesPath --parameters $templateParametersPath) | ConvertFrom-Json
 $storageAccount = $resourceDeployment.properties.outputs.storageAccount.value
@@ -110,7 +111,7 @@ $templateParametersPath = "$modulePath/06.TimeSeriesInsights/Template.Parameters
 
 Set-TemplateParameter $templateParametersPath "storageAccount" "name" $storageAccount.name
 
-$resourceGroupName = Set-ResourceGroup $regionName $resourceGroupPrefix ".Insight"
+$resourceGroupName = Set-ResourceGroup $regionName $resourceGroupPrefix ".Data"
 
 $resourceDeployment = (az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file $templateResourcesPath --parameters $templateParametersPath) | ConvertFrom-Json
 $insightEnvironment = $resourceDeployment.properties.outputs.insightEnvironment.value
@@ -133,7 +134,7 @@ Set-TemplateParameter $templateParametersPath "insightEnvironment" "resourceGrou
 Set-TemplateParameter $templateParametersPath "virtualNetwork" "name" $virtualNetwork.name
 Set-TemplateParameter $templateParametersPath "virtualNetwork" "resourceGroupName" $virtualNetwork.resourceGroupName
 
-$resourceGroupName = Set-ResourceGroup $regionName $resourceGroupPrefix ".IoT"
+$resourceGroupName = Set-ResourceGroup $regionName $resourceGroupPrefix ".Device"
 
 $resourceDeployment = (az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file $templateResourcesPath --parameters $templateParametersPath) | ConvertFrom-Json
 $iotHub = $resourceDeployment.properties.outputs.iotHub.value
@@ -150,12 +151,13 @@ $templateParametersPath = "$modulePath/08.VideoAnalyzer/Template.Parameters.json
 Set-TemplateParameter $templateParametersPath "managedIdentity" "name" $managedIdentity.name
 Set-TemplateParameter $templateParametersPath "managedIdentity" "resourceGroupName" $managedIdentity.resourceGroupName
 
-Set-TemplateParameter $templateParametersPath "keyVault" "uri" $keyVault.uri
+Set-TemplateParameter $templateParametersPath "keyVault" "name" $keyVault.name
+Set-TemplateParameter $templateParametersPath "keyVault" "resourceGroupName" $keyVault.resourceGroupName
 
 Set-TemplateParameter $templateParametersPath "storageAccounts" "name" $storageAccount.name 0 $true
 Set-TemplateParameter $templateParametersPath "storageAccounts" "resourceGroupName" $storageAccount.resourceGroupName 0 $true
 
-$resourceGroupName = Set-ResourceGroup $regionName $resourceGroupPrefix ".IoT"
+$resourceGroupName = Set-ResourceGroup $regionName $resourceGroupPrefix ".Pipeline"
 
 $resourceDeployment = (az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file $templateResourcesPath --parameters $templateParametersPath) | ConvertFrom-Json
 $videoAnalyzer = $resourceDeployment.properties.outputs.videoAnalyzer.value

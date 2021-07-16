@@ -4,25 +4,29 @@
   "parameters": {
     "videoAnalyzer": {
       "value": {
-        "name": "eva0"
+        "name": "eva1",
+        "edgeModule": {
+          "name": ""
+        }
       }
     },
     "managedIdentity": {
       "value": {
-        "name": "eva0",
+        "name": "eva1",
         "resourceGroupName": "EdgeVideoAnalyzer"
       }
     },
     "keyVault": {
       "value": {
-        "uri": "https://eva0.vault.azure.net/"
+        "name": "eva1",
+        "resourceGroupName": "EdgeVideoAnalyzer"
       }
     },
     "storageAccounts": {
       "value": [
         {
-          "name": "eva0",
-          "resourceGroupName": "EdgeVideoAnalyzer.Insight"
+          "name": "eva1",
+          "resourceGroupName": "EdgeVideoAnalyzer.Data"
         }
       ]
     }

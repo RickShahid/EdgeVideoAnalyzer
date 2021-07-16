@@ -13,7 +13,7 @@ New-TraceMessage $moduleName false
 templateResourcesPath="$modulePath/Template.json"
 templateParametersPath="$modulePath/Template.Parameters.json"
 
-resourceGroupName=$(Set-ResourceGroup $regionName $resourceGroupPrefix ".Insight")
+resourceGroupName=$(Set-ResourceGroup $regionName $resourceGroupPrefix ".Data")
 
 az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file "$templateResourcesPath" --parameters "$templateParametersPath"
 

@@ -23,8 +23,8 @@
   },
   "variables": {
     "roleAssignmentApiVersion": "2021-04-01-preview",
-    "storageApiVersion": "2021-04-01",
-    "networkApiVersion": "2021-02-01",
+    "storageApiVersion": "2021-06-01",
+    "networkApiVersion": "2021-03-01",
     "dnsZoneApiVersion": "2020-06-01",
     "dnsZoneName": "privatelink.blob.core.windows.net"
   },
@@ -74,7 +74,7 @@
     },
     {
       "type": "Microsoft.Storage/storageAccounts/providers/roleAssignments",
-      "name": "[concat(parameters('storageAccount').name, '/Microsoft.Authorization/', guid(parameters('storageAccount').name, parameters('roleAssignments')[copyIndex()].roleName))]",
+      "name": "[concat(parameters('storageAccount').name, '/Microsoft.Authorization/', guid(parameters('roleAssignments')[copyIndex()].roleId, parameters('roleAssignments')[copyIndex()].principalId))]",
       "apiVersion": "[variables('roleAssignmentApiVersion')]",
       "location": "[resourceGroup().location]",
       "dependsOn":[
