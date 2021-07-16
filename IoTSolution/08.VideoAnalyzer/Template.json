@@ -13,19 +13,11 @@
     },
     "storageAccounts": {
       "type": "array"
-    },
-    "baseTime": {
-      "type": "string",
-      "defaultValue": "[utcNow('u')]"
     }
   },
   "variables": {
     "videoAnalyzerApiVersion": "2021-05-01-preview",
-    "keyVaultApiVersion": "2021-04-01-preview",
-    "edgeModuleEnabled": "[not(equals(parameters('videoAnalyzer').edgeModule.name, ''))]",
-    "edgeModuleToken": {
-      "expirationDate": "[dateTimeAdd(parameters('baseTime'), 'P7D', 'yyyy-MM-ddTHH:mm:ss+00:00')]"
-    }
+    "keyVaultApiVersion": "2021-04-01-preview"
   },
   "functions": [
     {
@@ -84,14 +76,18 @@
       }
     },
     {
-      "condition": "[variables('edgeModuleEnabled')]",
+      "condition": "[not(equals(parameters('videoAnalyzer').edgeModules[copyIndex()], ''))]",
       "type": "Microsoft.Media/videoAnalyzers/edgeModules",
-      "name": "[concat(parameters('videoAnalyzer').name, '/', fx.GetResourceName(parameters('videoAnalyzer').edgeModule))]",
+      "name": "[concat(parameters('videoAnalyzer').name, '/', fx.GetResourceName(parameters('videoAnalyzer').edgeModules[copyIndex()]))]",
       "apiVersion": "[variables('videoAnalyzerApiVersion')]",
       "dependsOn": [
         "[resourceId('Microsoft.Media/videoAnalyzers', parameters('videoAnalyzer').name)]"
       ],
       "properties": {
+      },
+      "copy": {
+        "name": "edgeModules",
+        "count": "[length(parameters('videoAnalyzer').edgeModules)]"
       }
     }
   ],
@@ -99,8 +95,9 @@
     "videoAnalyzer": {
       "type": "object",
       "value": {
-        "endpoints": "[reference(resourceId('Microsoft.Media/videoAnalyzers', parameters('videoAnalyzer').name), variables('videoAnalyzerApiVersion')).endpoints]",
-        "provisioningToken": "[if(variables('edgeModuleEnabled'), listProvisioningToken(resourceId('Microsoft.Media/videoAnalyzers/edgeModules', parameters('videoAnalyzer').name, fx.GetResourceName(parameters('videoAnalyzer').edgeModule)), variables('videoAnalyzerApiVersion'), variables('edgeModuleToken')).token, '')]"
+        "name": "[parameters('videoAnalyzer').name]",
+        "resourceGroupName": "[resourceGroup().name]",
+        "endpoints": "[reference(resourceId('Microsoft.Media/videoAnalyzers', parameters('videoAnalyzer').name), variables('videoAnalyzerApiVersion')).endpoints]"
       }
     }
   }

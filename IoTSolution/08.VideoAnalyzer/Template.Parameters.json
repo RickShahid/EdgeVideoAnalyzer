@@ -5,9 +5,11 @@
     "videoAnalyzer": {
       "value": {
         "name": "eva1",
-        "edgeModule": {
-          "name": ""
-        }
+        "edgeModules": [
+          {
+            "name": "camera1"
+          }
+        ]
       }
     },
     "managedIdentity": {

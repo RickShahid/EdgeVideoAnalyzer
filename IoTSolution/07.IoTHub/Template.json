@@ -264,6 +264,7 @@
         "[resourceId('Microsoft.Devices/iotHubs', parameters('iotHub').name)]"
       ],
       "properties": {
+        "name": "[parameters('iotHub').eventHub.consumerGroupName]"
       }
     },
     {
@@ -272,7 +273,7 @@
       "apiVersion": "[variables('resourceDeploymentApiVersion')]",
       "resourceGroup": "[parameters('insightEnvironment').resourceGroupName]",
       "dependsOn": [
-        "[resourceId('Microsoft.Devices/iotHubs/eventHubEndpoints/consumerGroups', concat(parameters('iotHub').name, '/events/', parameters('iotHub').eventHub.consumerGroupName))]"
+        "[resourceId('Microsoft.Devices/iotHubs/eventHubEndpoints/consumerGroups', parameters('iotHub').name, 'events', parameters('iotHub').eventHub.consumerGroupName)]"
       ],
       "properties": {
         "mode": "Incremental",
