@@ -56,7 +56,7 @@
             "connectionString": "[concat('HostName=', reference(resourceId(parameters('iotHub').resourceGroupName, 'Microsoft.Devices/iotHubs', parameters('iotHub').name), variables('iotHubApiVersion')).hostName, ';SharedAccessKeyName=', parameters('iotHub').keyName, ';SharedAccessKey=', listkeys(resourceId(parameters('iotHub').resourceGroupName, 'Microsoft.Devices/iotHubs/iotHubKeys', parameters('iotHub').name, parameters('iotHub').keyName), variables('iotHubApiVersion')).primaryKey)]"
           }
         ],
-        "publicNetworkAccess": "Disabled"
+        "publicNetworkAccess": "[parameters('iotDeviceProvisioning').publicNetworkAccess]"
       }
     },
     {

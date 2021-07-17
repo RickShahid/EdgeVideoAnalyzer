@@ -9,7 +9,8 @@
           "name": "S1",
           "units": 1
         },
-        "allocationPolicy": "Hashed"
+        "allocationPolicy": "Hashed",
+        "publicNetworkAccess": "Enabled"
       }
     },
     "iotHub": {

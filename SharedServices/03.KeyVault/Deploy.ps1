@@ -18,6 +18,7 @@ Set-TemplateParameter $templateParametersPath "keyVault" "roleAssignments.princi
 
 $resourceGroupName = Set-ResourceGroup $regionName $resourceGroupPrefix ""
 
-az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file $templateResourcesPath --parameters $templateParametersPath
+$resourceDeployment = (az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file $templateResourcesPath --parameters $templateParametersPath) | ConvertFrom-Json
+$keyVault = $resourceDeployment.properties.outputs.keyVault.value
 
 New-TraceMessage $moduleName $true

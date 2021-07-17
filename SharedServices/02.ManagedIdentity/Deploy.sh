@@ -15,6 +15,7 @@ templateParametersPath="$modulePath/Template.Parameters.json"
 
 resourceGroupName=$(Set-ResourceGroup $regionName $resourceGroupPrefix "")
 
-az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file "$templateResourcesPath" --parameters "$templateParametersPath"
+resourceDeployment=$(az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file "$templateResourcesPath" --parameters "$templateParametersPath")
+managedIdentity=$(Get-PropertyValue "$resourceDeployment" .properties.outputs.managedIdentity.value false)
 
 New-TraceMessage $moduleName true

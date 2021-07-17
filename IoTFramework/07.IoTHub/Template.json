@@ -68,7 +68,7 @@
             "retentionTimeInDays": "[parameters('iotHub').eventHub.dataRetentionDays]"
           }
         },
-        "publicNetworkAccess": "Disabled"
+        "publicNetworkAccess": "[parameters('iotHub').publicNetworkAccess]"
       }
     },
     {

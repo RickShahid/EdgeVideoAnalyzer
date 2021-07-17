@@ -15,6 +15,7 @@ templateParametersPath="$modulePath/Template.Parameters.json"
 
 resourceGroupName=$(Set-ResourceGroup $regionName $resourceGroupPrefix ".Network")
 
-az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file "$templateResourcesPath" --parameters "$templateParametersPath"
+resourceDeployment=$(az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file "$templateResourcesPath" --parameters "$templateParametersPath")
+virtualNetwork=$(Get-PropertyValue "$resourceDeployment" .properties.outputs.virtualNetwork.value false)
 
 New-TraceMessage $moduleName true

@@ -18,6 +18,7 @@ Set-TemplateParameter $templateParametersPath "insightEnvironment" "accessPolici
 
 $resourceGroupName = Set-ResourceGroup $regionName $resourceGroupPrefix ".Data"
 
-az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file $templateResourcesPath --parameters $templateParametersPath
+$resourceDeployment = (az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file $templateResourcesPath --parameters $templateParametersPath) | ConvertFrom-Json
+$insightEnvironment = $resourceDeployment.properties.outputs.insightEnvironment.value
 
 New-TraceMessage $moduleName $true

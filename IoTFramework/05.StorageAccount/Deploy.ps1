@@ -15,6 +15,7 @@ $templateParametersPath = "$modulePath/Template.Parameters.json"
 
 $resourceGroupName = Set-ResourceGroup $regionName $resourceGroupPrefix ".Data"
 
-az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file $templateResourcesPath --parameters $templateParametersPath
+$resourceDeployment = (az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file $templateResourcesPath --parameters $templateParametersPath) | ConvertFrom-Json
+$storageAccount = $resourceDeployment.properties.outputs.storageAccount.value
 
 New-TraceMessage $moduleName $true

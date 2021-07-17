@@ -15,6 +15,7 @@ $templateParametersPath = "$modulePath/Template.Parameters.json"
 
 $resourceGroupName = Set-ResourceGroup $regionName $resourceGroupPrefix ".Hub"
 
-az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file $templateResourcesPath --parameters $templateParametersPath
+$resourceDeployment = (az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file $templateResourcesPath --parameters $templateParametersPath) | ConvertFrom-Json
+$iotHub = $resourceDeployment.properties.outputs.iotHub.value
 
 New-TraceMessage $moduleName $true

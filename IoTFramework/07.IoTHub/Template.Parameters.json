@@ -14,7 +14,8 @@
           "dataRetentionDays": 7,
           "consumerGroupName": "videoAnalyzer"
         },
-        "keyName": "iothubowner"
+        "keyName": "iothubowner",
+        "publicNetworkAccess": "Disabled"
       }
     },
     "managedIdentity": {

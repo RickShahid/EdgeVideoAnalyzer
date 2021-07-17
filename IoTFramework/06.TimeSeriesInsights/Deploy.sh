@@ -19,6 +19,7 @@ Set-TemplateParameter $templateParametersPath "insightEnvironment" "accessPolici
 
 resourceGroupName=$(Set-ResourceGroup $regionName $resourceGroupPrefix ".Data")
 
-az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file "$templateResourcesPath" --parameters "$templateParametersPath"
+resourceDeployment=$(az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file "$templateResourcesPath" --parameters "$templateParametersPath")
+insightEnvironment=$(Get-PropertyValue "$resourceDeployment" .properties.outputs.insightEnvironment.value false)
 
 New-TraceMessage $moduleName true

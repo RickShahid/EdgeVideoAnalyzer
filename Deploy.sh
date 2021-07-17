@@ -175,7 +175,10 @@ Set-TemplateParameter $templateParametersPath "virtualNetwork" "resourceGroupNam
 resourceGroupName=$(Set-ResourceGroup $regionName $resourceGroupPrefix ".Device")
 
 resourceDeployment=$(az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file "$templateResourcesPath" --parameters "$templateParametersPath")
-iotHub=$(Get-PropertyValue "$resourceDeployment" .properties.outputs.iotHub.value false)
+iotDeviceProvisioning=$(Get-PropertyValue "$resourceDeployment" .properties.outputs.iotDeviceProvisioning.value false)
+
+iotDeviceProvisioningName=$(Get-PropertyValue "$iotDeviceProvisioning" .name false)
+iotDeviceEnrollmentGroup=$(az iot dps enrollment-group create --resource-group $resourceGroupName --dps-name $iotDeviceProvisioningName --enrollment-id "cameras" --edge-enabled)
 
 New-TraceMessage $moduleName true
 
