@@ -179,7 +179,7 @@ Set-TemplateParameter $templateParametersPath "keyVault" "resourceGroupName" $ke
 Set-TemplateParameter $templateParametersPath "storageAccounts" "name" $storageAccount.name 0 $true
 Set-TemplateParameter $templateParametersPath "storageAccounts" "resourceGroupName" $storageAccount.resourceGroupName 0 $true
 
-$resourceGroupName = Set-ResourceGroup $regionName $resourceGroupPrefix ".Edge"
+$resourceGroupName = Set-ResourceGroup $regionName $resourceGroupPrefix ".Pipeline"
 
 $resourceDeployment = (az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file $templateResourcesPath --parameters $templateParametersPath) | ConvertFrom-Json
 $videoAnalyzer = $resourceDeployment.properties.outputs.videoAnalyzer.value
@@ -196,7 +196,7 @@ $templateParametersPath = "$modulePath/10.MediaServices/Template.Parameters.json
 Set-TemplateParameter $templateParametersPath "storageAccounts" "name" $storageAccount.name 0 $true
 Set-TemplateParameter $templateParametersPath "storageAccounts" "resourceGroupName" $storageAccount.resourceGroupName 0 $true
 
-$resourceGroupName = Set-ResourceGroup $regionName $resourceGroupPrefix ".Edge"
+$resourceGroupName = Set-ResourceGroup $regionName $resourceGroupPrefix ".Pipeline"
 
 $resourceDeployment = (az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file $templateResourcesPath --parameters $templateParametersPath) | ConvertFrom-Json
 $mediaAccount = $resourceDeployment.properties.outputs.mediaAccount.value

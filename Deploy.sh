@@ -203,7 +203,7 @@ storageAccountResourceGroupName=$(Get-PropertyValue "$storageAccount" .resourceG
 Set-TemplateParameter $templateParametersPath "storageAccounts" "name" $storageAccountName 0 true
 Set-TemplateParameter $templateParametersPath "storageAccounts" "resourceGroupName" $storageAccountResourceGroupName 0 true
 
-resourceGroupName=$(Set-ResourceGroup $regionName $resourceGroupPrefix ".Edge")
+resourceGroupName=$(Set-ResourceGroup $regionName $resourceGroupPrefix ".Pipeline")
 
 resourceDeployment=$(az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file "$templateResourcesPath" --parameters "$templateParametersPath")
 videoAnalyzer=$(Get-PropertyValue "$resourceDeployment" .properties.outputs.videoAnalyzer.value false)
@@ -222,7 +222,7 @@ storageAccountResourceGroupName=$(Get-PropertyValue "$storageAccount" .resourceG
 Set-TemplateParameter $templateParametersPath "storageAccounts" "name" $storageAccountName 0 true
 Set-TemplateParameter $templateParametersPath "storageAccounts" "resourceGroupName" $storageAccountResourceGroupName 0 true
 
-resourceGroupName=$(Set-ResourceGroup $regionName $resourceGroupPrefix ".Edge")
+resourceGroupName=$(Set-ResourceGroup $regionName $resourceGroupPrefix ".Pipeline")
 
 resourceDeployment=$(az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file "$templateResourcesPath" --parameters "$templateParametersPath")
 mediaAccount=$(Get-PropertyValue "$resourceDeployment" .properties.outputs.mediaAccount.value false)
