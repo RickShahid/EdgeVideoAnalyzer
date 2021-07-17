@@ -1,0 +1,51 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "mediaAccount": {
+      "type": "object"
+    },
+    "storageAccounts": {
+      "type": "array"
+    }
+  },
+  "variables": {
+    "mediaApiVersion": "2021-06-01"
+  },
+  "functions": [
+  ],
+  "resources": [
+    {
+      "type": "Microsoft.Media/mediaServices",
+      "name": "[parameters('mediaAccount').name]",
+      "apiVersion": "[variables('mediaApiVersion')]",
+      "location": "[resourceGroup().location]",
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "properties": {
+        "copy": [
+          {
+            "name": "storageAccounts",
+            "count": "[length(parameters('storageAccounts'))]",
+            "input": {
+              "id": "[resourceId(parameters('storageAccounts')[copyIndex('storageAccounts')].resourceGroupName, 'Microsoft.Storage/storageAccounts', parameters('storageAccounts')[copyIndex('storageAccounts')].name)]",
+              "type": "[if(equals(copyIndex('storageAccounts'), 0), 'Primary', 'Secondary')]"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+    "mediaAccount": {
+      "type": "object",
+      "value": {
+        "name": "[parameters('mediaAccount').name]",
+        "resourceGroupName": "[resourceGroup().name]",
+        "serviceId": "[reference(resourceId('Microsoft.Media/mediaServices', parameters('mediaAccount').name), variables('mediaApiVersion')).mediaServiceId]"
+      }
+    }
+  }
+}
+

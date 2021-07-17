@@ -1,0 +1,241 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "iotHub": {
+      "type": "object"
+    },
+    "managedIdentity": {
+      "type": "object"
+    },
+    "insightEnvironment": {
+      "type": "object"
+    },
+    "virtualNetwork": {
+      "type": "object"
+    }
+  },
+  "variables": {
+    "iotHubApiVersion": "2021-03-31",
+    "iotSecurityApiVersion": "2019-08-01",
+    "resourceDeploymentApiVersion": "2021-01-01",
+    "timeSeriesInsightApiVersion": "2020-05-15",
+    "networkApiVersion": "2021-03-01",
+    "dnsZoneApiVersion": "2020-06-01",
+    "dnsZoneNameIotHub": "privatelink.azure-devices.net",
+    "dnsZoneNameServiceBus": "privatelink.servicebus.windows.net"
+  },
+  "functions": [
+    {
+      "namespace": "fx",
+      "members": {
+        "GetDnsZoneConfigName": {
+          "parameters": [
+            {
+              "name": "dnsZoneName",
+              "type": "string"
+            }
+          ],
+          "output": {
+            "type": "string",
+            "value": "[replace(parameters('dnsZoneName'), '.', '-')]"
+          }
+        }
+      }
+    }
+  ],
+  "resources": [
+    {
+      "type": "Microsoft.Devices/iotHubs",
+      "name": "[parameters('iotHub').name]",
+      "apiVersion": "[variables('iotHubApiVersion')]",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "[parameters('iotHub').tier.name]",
+        "capacity": "[parameters('iotHub').tier.units]"
+      },
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "[resourceId(parameters('managedIdentity').resourceGroupName, 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentity').name)]": {
+          }
+        }
+      },
+      "properties": {
+        "eventHubEndpoints": {
+          "events": {
+            "partitionCount": "[parameters('iotHub').eventHub.partitionCount]",
+            "retentionTimeInDays": "[parameters('iotHub').eventHub.dataRetentionDays]"
+          }
+        },
+        "publicNetworkAccess": "Disabled"
+      }
+    },
+    {
+      "type": "Microsoft.Security/iotSecuritySolutions",
+      "name": "[parameters('iotHub').name]",
+      "apiVersion": "[variables('iotSecurityApiVersion')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Devices/iotHubs', parameters('iotHub').name)]"
+      ],
+      "properties": {
+        "displayName": "[parameters('iotHub').name]",
+        "iotHubs": [
+          "[resourceId('Microsoft.Devices/iotHubs', parameters('iotHub').name)]"
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/privateDnsZones",
+      "name": "[variables('dnsZoneNameIotHub')]",
+      "apiVersion": "[variables('dnsZoneApiVersion')]",
+      "location": "global",
+      "properties": {
+      }
+    },
+    {
+      "type": "Microsoft.Network/privateDnsZones",
+      "name": "[variables('dnsZoneNameServiceBus')]",
+      "apiVersion": "[variables('dnsZoneApiVersion')]",
+      "location": "global",
+      "properties": {
+      }
+    },
+    {
+      "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+      "name": "[concat(variables('dnsZoneNameIotHub'), '/', parameters('virtualNetwork').name)]",
+      "apiVersion": "[variables('dnsZoneApiVersion')]",
+      "location": "global",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateDnsZones', variables('dnsZoneNameIotHub'))]"
+      ],
+      "properties": {
+        "virtualNetwork": {
+          "id": "[resourceId(parameters('virtualNetwork').resourceGroupName, 'Microsoft.Network/virtualNetworks', parameters('virtualNetwork').name)]"
+        },
+        "registrationEnabled": "[parameters('virtualNetwork').enableDnsAutoRegistration]"
+      }
+    },
+    {
+      "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+      "name": "[concat(variables('dnsZoneNameServiceBus'), '/', parameters('virtualNetwork').name)]",
+      "apiVersion": "[variables('dnsZoneApiVersion')]",
+      "location": "global",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateDnsZones', variables('dnsZoneNameServiceBus'))]"
+      ],
+      "properties": {
+        "virtualNetwork": {
+          "id": "[resourceId(parameters('virtualNetwork').resourceGroupName, 'Microsoft.Network/virtualNetworks', parameters('virtualNetwork').name)]"
+        },
+        "registrationEnabled": false
+      }
+    },
+    {
+      "type": "Microsoft.Network/privateEndpoints",
+      "name": "[parameters('iotHub').name]",
+      "apiVersion": "[variables('networkApiVersion')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Devices/iotHubs', parameters('iotHub').name)]"
+      ],
+      "properties": {
+        "subnet": {
+          "id": "[resourceId(parameters('virtualNetwork').resourceGroupName, 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetwork').name, parameters('virtualNetwork').subnetName)]"
+        },
+        "privateLinkServiceConnections": [
+          {
+            "name": "iotHub",
+            "properties": {
+              "privateLinkServiceId": "[resourceId('Microsoft.Devices/iotHubs', parameters('iotHub').name)]",
+              "groupIds": [
+                "iotHub"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+      "name": "[concat(parameters('iotHub').name, '/default')]",
+      "apiVersion": "[variables('networkApiVersion')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateEndpoints', parameters('iotHub').name)]",
+        "[resourceId('Microsoft.Network/privateDnsZones', variables('dnsZoneNameIotHub'))]",
+        "[resourceId('Microsoft.Network/privateDnsZones', variables('dnsZoneNameServiceBus'))]"
+      ],
+      "properties": {
+        "privateDnsZoneConfigs": [
+          {
+            "name": "[fx.GetDnsZoneConfigName(variables('dnsZoneNameIotHub'))]",
+            "properties": {
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', variables('dnsZoneNameIotHub'))]"
+            }
+          },
+          {
+            "name": "[fx.GetDnsZoneConfigName(variables('dnsZoneNameServiceBus'))]",
+            "properties": {
+              "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', variables('dnsZoneNameServiceBus'))]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Devices/iotHubs/eventHubEndpoints/consumerGroups",
+      "name": "[concat(parameters('iotHub').name, '/events/', parameters('iotHub').eventHub.consumerGroupName)]",
+      "apiVersion": "[variables('iotHubApiVersion')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Devices/iotHubs', parameters('iotHub').name)]"
+      ],
+      "properties": {
+        "name": "[parameters('iotHub').eventHub.consumerGroupName]"
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "name": "[concat(deployment().name, '.TimeSeriesInsights')]",
+      "apiVersion": "[variables('resourceDeploymentApiVersion')]",
+      "resourceGroup": "[parameters('insightEnvironment').resourceGroupName]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Devices/iotHubs/eventHubEndpoints/consumerGroups', parameters('iotHub').name, 'events', parameters('iotHub').eventHub.consumerGroupName)]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [
+            {
+              "type": "Microsoft.TimeSeriesInsights/environments/eventSources",
+              "name": "[concat(parameters('insightEnvironment').name, '/', parameters('iotHub').name)]",
+              "apiVersion": "[variables('timeSeriesInsightApiVersion')]",
+              "location": "[resourceGroup().location]",
+              "kind": "Microsoft.IoTHub",
+              "properties": {
+                "sharedAccessKey": "[listkeys(resourceId('Microsoft.Devices/iotHubs/iotHubKeys', parameters('iotHub').name, parameters('iotHub').keyName), variables('iotHubApiVersion')).primaryKey]",
+                "eventSourceResourceId": "[resourceId('Microsoft.Devices/iotHubs', parameters('iotHub').name)]",
+                "timestampPropertyName": "[parameters('insightEnvironment').timestampPropertyName]",
+                "consumerGroupName": "[parameters('iotHub').eventHub.consumerGroupName]",
+                "iotHubName": "[parameters('iotHub').name]",
+                "keyName": "[parameters('iotHub').keyName]"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "iotHub": {
+      "type": "object",
+      "value": {
+        "name": "[parameters('iotHub').name]",
+        "resourceGroupName": "[resourceGroup().name]"
+      }
+    }
+  }
+}

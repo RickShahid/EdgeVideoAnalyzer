@@ -49,8 +49,9 @@ The Edge Video Analyzer solution integrates the following Microsoft Azure servic
         <td>
             <a href="https://docs.microsoft.com/en-us/azure/iot-hub/about-iot-hub" target="_blank">Azure IoT Hub</a>
         </td>
-        </td>
         <td>
+            <a href="https://docs.microsoft.com/en-us/azure/media-services/latest/media-services-overview" target="_blank">Azure Media Services</a>
+        </td>
     </tr>
 </table>
 
@@ -58,11 +59,11 @@ The Edge Video Analyzer solution integrates the following Microsoft Azure servic
 
 The Edge Video Analyzer solution is composed from the following Microsoft Azure resource templates.
 
-| *Base Framework* | *IoT Solution* |
-| :--------------- | :------------- |
-| (01) [Virtual Network](BaseFramework/01.VirtualNetwork/Template.json) ([Parameters](BaseFramework/01.VirtualNetwork/Template.Parameters.json)) | (05) [Storage Account](IoTSolution/05.StorageAccount/Template.json) ([Parameters](IoTSolution/05.StorageAccount/Template.Parameters.json)) |
-| (02) [Managed Identity](BaseFramework/02.ManagedIdentity/Template.json) ([Parameters](BaseFramework/02.ManagedIdentity/Template.Parameters.json)) | (06) [Time Series Insights](IoTSolution/06.TimeSeriesInsights/Template.json) ([Parameters](IoTSolution/06.TimeSeriesInsights/Template.Parameters.json)) |
-| (03) [Key Vault](BaseFramework/03.KeyVault/Template.json) ([Parameters](BaseFramework/03.KeyVault/Template.Parameters.json)) | (07) [IoT Hub](IoTSolution/07.IoTHub/Template.json) ([Parameters](IoTSolution/07.IoTHub/Template.Parameters.json)) |
-| (04) [Network Gateway](BaseFramework/04.NetworkGateway/Template.json) ([Parameters](BaseFramework/04.NetworkGateway/Template.Parameters.json)) | (08) [Video Analyzer](IoTSolution/08.VideoAnalyzer/Template.json) ([Parameters](IoTSolution/08.VideoAnalyzer/Template.Parameters.json)) |
+| *Shared Services* | *IoT Framework* | *Edge Pipeline* |
+| :----------- | :-------------- | :-------------- |
+| (01) [Virtual Network](SharedServices/01.VirtualNetwork/Template.json) ([Parameters](SharedServices/01.VirtualNetwork/Template.Parameters.json)) | (05) [Storage Account](IoTFramework/05.StorageAccount/Template.json) ([Parameters](IoTFramework/05.StorageAccount/Template.Parameters.json)) | (09) [Video Analyzer](EdgePipeline/09.VideoAnalyzer/Template.json) ([Parameters](EdgePipeline/09.VideoAnalyzer/Template.Parameters.json)) |
+| (02) [Managed Identity](SharedServices/02.ManagedIdentity/Template.json) ([Parameters](SharedServices/02.ManagedIdentity/Template.Parameters.json)) | (06) [Time Series Insights](IoTFramework/06.TimeSeriesInsights/Template.json) ([Parameters](IoTFramework/06.TimeSeriesInsights/Template.Parameters.json)) | (10) [Media Services](EdgePipeline/10.MediaServices/Template.json) ([Parameters](EdgePipeline/10.MediaServices/Template.Parameters.json)) |
+| (03) [Key Vault](SharedServices/03.KeyVault/Template.json) ([Parameters](SharedServices/03.KeyVault/Template.Parameters.json)) | (07) [IoT Hub](IoTFramework/07.IoTHub/Template.json) ([Parameters](IoTFramework/07.IoTHub/Template.Parameters.json)) | |
+| (04) [Network Gateway](SharedServices/04.NetworkGateway/Template.json) ([Parameters](SharedServices/04.NetworkGateway/Template.Parameters.json)) | (08) [IoT Device](IoTFramework/08.IoTDevice/Template.json) ([Parameters](IoTFramework/08.IoTDevice/Template.Parameters.json)) | |
 
 For more information, contact Rick Shahid (rick.shahid@microsoft.com)

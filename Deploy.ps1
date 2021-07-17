@@ -4,9 +4,9 @@ param (
 )
 
 $scriptRoot = $PSScriptRoot
-Import-Module "$scriptRoot/Shared/Functions.psm1"
+Import-Module "$scriptRoot/SharedServices/Functions.psm1"
 
-$modulePath = "$scriptRoot/BaseFramework"
+$modulePath = "$scriptRoot/SharedServices"
 
 # 01.VirtualNetwork
 $moduleName = "01.VirtualNetwork"
@@ -80,7 +80,7 @@ $networkGateway = $resourceDeployment.properties.outputs.networkGateway.value
 
 New-TraceMessage $moduleName $true
 
-$modulePath = "$scriptRoot/IoTSolution"
+$modulePath = "$scriptRoot/IoTFramework"
 
 # 05.StorageAccount
 $moduleName = "05.StorageAccount"
@@ -134,19 +134,41 @@ Set-TemplateParameter $templateParametersPath "insightEnvironment" "resourceGrou
 Set-TemplateParameter $templateParametersPath "virtualNetwork" "name" $virtualNetwork.name
 Set-TemplateParameter $templateParametersPath "virtualNetwork" "resourceGroupName" $virtualNetwork.resourceGroupName
 
-$resourceGroupName = Set-ResourceGroup $regionName $resourceGroupPrefix ".Device"
+$resourceGroupName = Set-ResourceGroup $regionName $resourceGroupPrefix ".Hub"
 
 $resourceDeployment = (az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file $templateResourcesPath --parameters $templateParametersPath) | ConvertFrom-Json
 $iotHub = $resourceDeployment.properties.outputs.iotHub.value
 
 New-TraceMessage $moduleName $true
 
-# 08.VideoAnalyzer
-$moduleName = "08.VideoAnalyzer"
+# 08.IoTDevice
+$moduleName = "08.IoTDevice"
 New-TraceMessage $moduleName $false
 
-$templateResourcesPath = "$modulePath/08.VideoAnalyzer/Template.json"
-$templateParametersPath = "$modulePath/08.VideoAnalyzer/Template.Parameters.json"
+$templateResourcesPath = "$modulePath/08.IoTDevice/Template.json"
+$templateParametersPath = "$modulePath/08.IoTDevice/Template.Parameters.json"
+
+Set-TemplateParameter $templateParametersPath "iotHub" "name" $iotHub.name
+Set-TemplateParameter $templateParametersPath "iotHub" "resourceGroupName" $iotHub.resourceGroupName
+
+Set-TemplateParameter $templateParametersPath "virtualNetwork" "name" $virtualNetwork.name
+Set-TemplateParameter $templateParametersPath "virtualNetwork" "resourceGroupName" $virtualNetwork.resourceGroupName
+
+$resourceGroupName = Set-ResourceGroup $regionName $resourceGroupPrefix ".Device"
+
+$resourceDeployment = (az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file $templateResourcesPath --parameters $templateParametersPath) | ConvertFrom-Json
+$iotDeviceProvisioning = $resourceDeployment.properties.outputs.iotDeviceProvisioning.value
+
+New-TraceMessage $moduleName $true
+
+$modulePath = "$scriptRoot/EdgePipeline"
+
+# 09.VideoAnalyzer
+$moduleName = "09.VideoAnalyzer"
+New-TraceMessage $moduleName $false
+
+$templateResourcesPath = "$modulePath/09.VideoAnalyzer/Template.json"
+$templateParametersPath = "$modulePath/09.VideoAnalyzer/Template.Parameters.json"
 
 Set-TemplateParameter $templateParametersPath "managedIdentity" "name" $managedIdentity.name
 Set-TemplateParameter $templateParametersPath "managedIdentity" "resourceGroupName" $managedIdentity.resourceGroupName
@@ -157,9 +179,26 @@ Set-TemplateParameter $templateParametersPath "keyVault" "resourceGroupName" $ke
 Set-TemplateParameter $templateParametersPath "storageAccounts" "name" $storageAccount.name 0 $true
 Set-TemplateParameter $templateParametersPath "storageAccounts" "resourceGroupName" $storageAccount.resourceGroupName 0 $true
 
-$resourceGroupName = Set-ResourceGroup $regionName $resourceGroupPrefix ".Pipeline"
+$resourceGroupName = Set-ResourceGroup $regionName $resourceGroupPrefix ".Edge"
 
 $resourceDeployment = (az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file $templateResourcesPath --parameters $templateParametersPath) | ConvertFrom-Json
 $videoAnalyzer = $resourceDeployment.properties.outputs.videoAnalyzer.value
+
+New-TraceMessage $moduleName $true
+
+# 10.MediaServices
+$moduleName = "10.MediaServices"
+New-TraceMessage $moduleName $false
+
+$templateResourcesPath = "$modulePath/10.MediaServices/Template.json"
+$templateParametersPath = "$modulePath/10.MediaServices/Template.Parameters.json"
+
+Set-TemplateParameter $templateParametersPath "storageAccounts" "name" $storageAccount.name 0 $true
+Set-TemplateParameter $templateParametersPath "storageAccounts" "resourceGroupName" $storageAccount.resourceGroupName 0 $true
+
+$resourceGroupName = Set-ResourceGroup $regionName $resourceGroupPrefix ".Edge"
+
+$resourceDeployment = (az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file $templateResourcesPath --parameters $templateParametersPath) | ConvertFrom-Json
+$mediaAccount = $resourceDeployment.properties.outputs.mediaAccount.value
 
 New-TraceMessage $moduleName $true

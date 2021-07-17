@@ -1,0 +1,31 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "iotDeviceProvisioning": {
+      "value": {
+        "name": "eva1",
+        "tier": {
+          "name": "S1",
+          "units": 1
+        },
+        "allocationPolicy": "Hashed"
+      }
+    },
+    "iotHub": {
+      "value": {
+        "name": "eva1",
+        "resourceGroupName": "EdgeVideoAnalyzer.Hub",
+        "keyName": "iothubowner"
+      }
+    },
+    "virtualNetwork": {
+      "value": {
+        "name": "eva1",
+        "subnetName": "Device",
+        "resourceGroupName": "EdgeVideoAnalyzer.Network",
+        "enableDnsAutoRegistration": true
+      }
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "iotHub": {
+      "value": {
+        "name": "eva1",
+        "tier": {
+          "name": "S1",
+          "units": 1
+        },
+        "eventHub": {
+          "partitionCount": 4,
+          "dataRetentionDays": 7,
+          "consumerGroupName": "videoAnalyzer"
+        },
+        "keyName": "iothubowner"
+      }
+    },
+    "managedIdentity": {
+      "value": {
+        "name": "eva1",
+        "resourceGroupName": "EdgeVideoAnalyzer"
+      }
+    },
+    "insightEnvironment": {
+      "value": {
+        "name": "eva1",
+        "resourceGroupName": "EdgeVideoAnalyzer.Data",
+        "timestampPropertyName": "eventTime"
+      }
+    },
+    "virtualNetwork": {
+      "value": {
+        "name": "eva1",
+        "subnetName": "Device",
+        "resourceGroupName": "EdgeVideoAnalyzer.Network",
+        "enableDnsAutoRegistration": false
+      }
+    }
+  }
+}
