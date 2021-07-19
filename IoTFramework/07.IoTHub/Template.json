@@ -68,7 +68,7 @@
             "retentionTimeInDays": "[parameters('iotHub').eventHub.dataRetentionDays]"
           }
         },
-        "publicNetworkAccess": "[parameters('iotHub').publicNetworkAccess]"
+        "publicNetworkAccess": "[if(parameters('iotHub').enablePrivateNetworking, 'Disabled', 'Enabled')]"
       }
     },
     {
@@ -87,6 +87,7 @@
       }
     },
     {
+      "condition": "[parameters('iotHub').enablePrivateNetworking]",
       "type": "Microsoft.Network/privateDnsZones",
       "name": "[variables('dnsZoneNameIotHub')]",
       "apiVersion": "[variables('dnsZoneApiVersion')]",
@@ -95,6 +96,7 @@
       }
     },
     {
+      "condition": "[parameters('iotHub').enablePrivateNetworking]",
       "type": "Microsoft.Network/privateDnsZones",
       "name": "[variables('dnsZoneNameServiceBus')]",
       "apiVersion": "[variables('dnsZoneApiVersion')]",
@@ -103,6 +105,7 @@
       }
     },
     {
+      "condition": "[parameters('iotHub').enablePrivateNetworking]",
       "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
       "name": "[concat(variables('dnsZoneNameIotHub'), '/', parameters('virtualNetwork').name)]",
       "apiVersion": "[variables('dnsZoneApiVersion')]",
@@ -118,6 +121,7 @@
       }
     },
     {
+      "condition": "[parameters('iotHub').enablePrivateNetworking]",
       "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
       "name": "[concat(variables('dnsZoneNameServiceBus'), '/', parameters('virtualNetwork').name)]",
       "apiVersion": "[variables('dnsZoneApiVersion')]",
@@ -133,6 +137,7 @@
       }
     },
     {
+      "condition": "[parameters('iotHub').enablePrivateNetworking]",
       "type": "Microsoft.Network/privateEndpoints",
       "name": "[parameters('iotHub').name]",
       "apiVersion": "[variables('networkApiVersion')]",
@@ -158,6 +163,7 @@
       }
     },
     {
+      "condition": "[parameters('iotHub').enablePrivateNetworking]",
       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
       "name": "[concat(parameters('iotHub').name, '/default')]",
       "apiVersion": "[variables('networkApiVersion')]",

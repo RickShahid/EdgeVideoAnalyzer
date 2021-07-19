@@ -15,7 +15,7 @@
           "consumerGroupName": "videoAnalyzer"
         },
         "keyName": "iothubowner",
-        "publicNetworkAccess": "Disabled"
+        "enablePrivateNetworking": false
       }
     },
     "managedIdentity": {

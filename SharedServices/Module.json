@@ -1,0 +1,95 @@
+{
+  "$schema-template": "2.0.0",
+  "modulesContent": {
+    "$edgeAgent": {
+      "properties.desired": {
+        "schemaVersion": "1.0",
+        "runtime": {
+          "type": "docker",
+          "settings": {
+            "minDockerVersion": "v1.25",
+            "loggingOptions": "",
+            "registryCredentials": {
+            }
+          }
+        },
+        "systemModules": {
+          "edgeAgent": {
+            "type": "docker",
+            "settings": {
+              "image": "mcr.microsoft.com/azureiotedge-agent:1.1",
+              "createOptions": "{}"
+            }
+          },
+          "edgeHub": {
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "mcr.microsoft.com/azureiotedge-hub:1.1",
+              "createOptions": "{ \"HostConfig\": { \"PortBindings\": { \"5671/tcp\": [ { \"HostPort\": \"5671\" } ], \"8883/tcp\": [ { \"HostPort\": \"8883\" } ], \"443/tcp\": [ { \"HostPort\": \"443\" } ] } } }"
+            },
+            "env": {
+              "UpstreamProtocol": {
+                "value": "AMQPWS"
+              }
+            }
+          }
+        },
+        "modules": {
+          "avaedge": {
+            "version": "1.1",
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "mcr.microsoft.com/media/video-analyzer:1",
+              "createOptions": "{ \"HostConfig\": { \"LogConfig\": { \"Type\": \"\", \"Config\": { \"max-size\": \"10m\", \"max-file\": \"10\" } }, \"Binds\": [ \"$VIDEO_OUTPUT_FOLDER_ON_DEVICE:/var/media/\", \"$APPDATA_FOLDER_ON_DEVICE:/var/lib/videoanalyzer\" ], \"IpcMode\": \"host\", \"ShmSize\": 1536870912 } }"
+            },
+            "env": {
+              "LOCAL_USER_ID": {
+                "value": "1010"
+              },
+              "LOCAL_GROUP_ID": {
+                "value": "1010"
+              }
+            }
+          },
+          "rtspsim": {
+            "version": "1.0",
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "mcr.microsoft.com/lva-utilities/rtspsim-live555:1.2",
+              "createOptions": "{ \"HostConfig\": { \"Binds\": [ \"$VIDEO_INPUT_FOLDER_ON_DEVICE:/live/mediaServer/media\" ] } }"
+            }
+          }
+        }
+      }
+    },
+    "$edgeHub": {
+      "properties.desired": {
+        "schemaVersion": "1.0",
+        "routes": {
+          "AVAToHub": "FROM /messages/modules/avaedge/outputs/* INTO $upstream"
+        },
+        "storeAndForwardConfiguration": {
+          "timeToLiveSecs": 7200
+        }
+      }
+    },
+    "avaedge": {
+      "properties.desired": {
+        "provisioningToken": "eyJhbGciOiJSUzI1NiIsImtpZCI6Ii1BcXBoMzcxVjhVbS1aZ3lJOUhDd0tsbXFrVSIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYW1lcmExIiwiYXVkIjpbImh0dHBzOi8vOGNiNDI2ZDhiZmI0NDI3NGEwZmEyZDQ0NzRiOWZmNzcuZWRnZWFwaS53ZXN0dXMyLTIudmlkZW9hbmFseXplci5henVyZS5uZXQvZWRnZU1vZHVsZXMvY2FtZXJhMSJdLCJleHAiOjE2MjY3MDc4NzYsImlzcyI6Imh0dHBzOi8vd2VzdHVzMi0yLnZpZGVvYW5hbHl6ZXIuYXp1cmUubmV0LyIsInRva2VuVHlwZSI6IlByb3Zpc2lvbmluZ1Rva2VuIiwibW9kdWxlQXJtSWQiOiIvc3Vic2NyaXB0aW9ucy8zZDA3Y2ZiYy0xN2FhLTQxYjQtYmFhMS00ODhmZWY4NWExZDMvcmVzb3VyY2VHcm91cHMvRWRnZVZpZGVvQW5hbHl6ZXIuUGlwZWxpbmUvcHJvdmlkZXJzL01pY3Jvc29mdC5NZWRpYS92aWRlb0FuYWx5emVycy9ldmExL2VkZ2VNb2R1bGVzL2NhbWVyYTEiLCJtb2R1bGVJZCI6IjQ5MTIxYWNiLTIzN2ItNDY4Zi1iMDQ3LTI1MjFlYTlmM2NhYyJ9.I_GSjDTkMy2dZaP6j0cI9S4kSJ9KzmIBO_5Rw7GSuIuwy50satQTEMZqJXKWGGbxbb5MShr4A4HzCKd4EVhl2QyK6b7dDAeQNHjCE7lTWSadDUO4VHzg2oS91OqmAMJ1FMBNyUyU5D9-UDEQql9NMhJJ6TWQCess_v9c7OsAGmO3x9fphmBuiKCEQ7mDx9lvqP3czbvpMa_OAEqSEWQugIetiObqofaWAOkAZ4Ta5S4nOwIcl9Av6wlLfGByKK7vk-Nxt5YWBVNV5uzTtpwPbGgJqcETsMoxXIZLIC_JTcXzPKR58CrRdMlPQftCst2pEJBgU4CdKSJGDJSRe2cD6Q",
+        "applicationDataDirectory": "/var/lib/videoanalyzer",
+        "diagnosticsEventsOutputName": "diagnostics",
+        "operationalEventsOutputName": "operational",
+        "logLevel": "Information",
+        "logCategories": "Application,Events",
+        "allowUnsecuredEndpoints": false,
+        "telemetryOptOut": false
+      }
+    }
+  }
+}

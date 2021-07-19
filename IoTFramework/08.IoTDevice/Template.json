@@ -56,10 +56,11 @@
             "connectionString": "[concat('HostName=', reference(resourceId(parameters('iotHub').resourceGroupName, 'Microsoft.Devices/iotHubs', parameters('iotHub').name), variables('iotHubApiVersion')).hostName, ';SharedAccessKeyName=', parameters('iotHub').keyName, ';SharedAccessKey=', listkeys(resourceId(parameters('iotHub').resourceGroupName, 'Microsoft.Devices/iotHubs/iotHubKeys', parameters('iotHub').name, parameters('iotHub').keyName), variables('iotHubApiVersion')).primaryKey)]"
           }
         ],
-        "publicNetworkAccess": "[parameters('iotDeviceProvisioning').publicNetworkAccess]"
+        "publicNetworkAccess": "[if(parameters('iotDeviceProvisioning').enablePrivateNetworking, 'Disabled', 'Enabled')]"
       }
     },
     {
+      "condition": "[parameters('iotDeviceProvisioning').enablePrivateNetworking]",
       "type": "Microsoft.Network/privateDnsZones",
       "name": "[variables('dnsZoneName')]",
       "apiVersion": "[variables('dnsZoneApiVersion')]",
@@ -68,6 +69,7 @@
       }
     },
     {
+      "condition": "[parameters('iotDeviceProvisioning').enablePrivateNetworking]",
       "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
       "name": "[concat(variables('dnsZoneName'), '/', parameters('virtualNetwork').name)]",
       "apiVersion": "[variables('dnsZoneApiVersion')]",
@@ -83,6 +85,7 @@
       }
     },
     {
+      "condition": "[parameters('iotDeviceProvisioning').enablePrivateNetworking]",
       "type": "Microsoft.Network/privateEndpoints",
       "name": "[parameters('iotDeviceProvisioning').name]",
       "apiVersion": "[variables('networkApiVersion')]",
@@ -108,6 +111,7 @@
       }
     },
     {
+      "condition": "[parameters('iotDeviceProvisioning').enablePrivateNetworking]",
       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
       "name": "[concat(parameters('iotDeviceProvisioning').name, '/default')]",
       "apiVersion": "[variables('networkApiVersion')]",

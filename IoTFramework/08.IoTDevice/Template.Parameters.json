@@ -10,7 +10,7 @@
           "units": 1
         },
         "allocationPolicy": "Hashed",
-        "publicNetworkAccess": "Enabled"
+        "enablePrivateNetworking": false
       }
     },
     "iotHub": {
