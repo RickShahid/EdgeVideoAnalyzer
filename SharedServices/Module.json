@@ -54,16 +54,6 @@
                 "value": "1010"
               }
             }
-          },
-          "rtspsim": {
-            "version": "1.0",
-            "type": "docker",
-            "status": "running",
-            "restartPolicy": "always",
-            "settings": {
-              "image": "mcr.microsoft.com/lva-utilities/rtspsim-live555:1.2",
-              "createOptions": "{ \"HostConfig\": { \"Binds\": [ \"$VIDEO_INPUT_FOLDER_ON_DEVICE:/live/mediaServer/media\" ] } }"
-            }
           }
         }
       }
