@@ -67,7 +67,7 @@
         "allowSharedKeyAccess": "[parameters('storageAccount').enableAccountKeyAccess]",
         "isHnsEnabled": "[parameters('storageAccount').enableHierarchialNamespace]",
         "networkAcls": {
-          "defaultAction": "Deny",
+          "defaultAction": "[if(parameters('storageAccount').enablePrivateNetworking, 'Deny', 'Allow')]",
           "bypass": "AzureServices"
         }
       }
@@ -139,6 +139,7 @@
       }
     },
     {
+      "condition": "[parameters('storageAccount').enablePrivateNetworking]",
       "type": "Microsoft.Network/privateDnsZones",
       "name": "[variables('dnsZoneName')]",
       "apiVersion": "[variables('dnsZoneApiVersion')]",
@@ -147,6 +148,7 @@
       }
     },
     {
+      "condition": "[parameters('storageAccount').enablePrivateNetworking]",
       "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
       "name": "[concat(variables('dnsZoneName'), '/', parameters('virtualNetwork').name)]",
       "apiVersion": "[variables('dnsZoneApiVersion')]",
@@ -162,6 +164,7 @@
       }
     },
     {
+      "condition": "[parameters('storageAccount').enablePrivateNetworking]",
       "type": "Microsoft.Network/privateEndpoints",
       "name": "[parameters('storageAccount').name]",
       "apiVersion": "[variables('networkApiVersion')]",
@@ -187,6 +190,7 @@
       }
     },
     {
+      "condition": "[parameters('storageAccount').enablePrivateNetworking]",
       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
       "name": "[concat(parameters('storageAccount').name, '/default')]",
       "apiVersion": "[variables('networkApiVersion')]",

@@ -76,7 +76,7 @@
       }
     },
     {
-      "condition": "[not(equals(parameters('videoAnalyzer').edgeModules[copyIndex()], ''))]",
+      "condition": "[not(equals(parameters('videoAnalyzer').edgeModules[copyIndex()].name, ''))]",
       "type": "Microsoft.Media/videoAnalyzers/edgeModules",
       "name": "[concat(parameters('videoAnalyzer').name, '/', fx.GetResourceName(parameters('videoAnalyzer').edgeModules[copyIndex()]))]",
       "apiVersion": "[variables('videoAnalyzerApiVersion')]",

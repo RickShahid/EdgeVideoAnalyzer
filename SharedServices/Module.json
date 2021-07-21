@@ -44,7 +44,7 @@
             "restartPolicy": "always",
             "settings": {
               "image": "mcr.microsoft.com/media/video-analyzer:1",
-              "createOptions": "{ \"HostConfig\": { \"LogConfig\": { \"Type\": \"\", \"Config\": { \"max-size\": \"10m\", \"max-file\": \"10\" } }, \"Binds\": [ \"$VIDEO_OUTPUT_FOLDER_ON_DEVICE:/var/media/\", \"$APPDATA_FOLDER_ON_DEVICE:/var/lib/videoanalyzer\" ], \"IpcMode\": \"host\", \"ShmSize\": 1536870912 } }"
+              "createOptions": "{ \"HostConfig\": { \"LogConfig\": { \"Type\": \"\", \"Config\": { \"max-size\": \"10m\", \"max-file\": \"10\" } }, \"Binds\": [ \"/var/media/:/var/media/\", \"/var/lib/videoanalyzer:/var/lib/videoanalyzer\" ], \"IpcMode\": \"host\", \"ShmSize\": 1536870912 } }"
             },
             "env": {
               "LOCAL_USER_ID": {
@@ -71,7 +71,7 @@
     },
     "avaedge": {
       "properties.desired": {
-        "provisioningToken": "eyJhbGciOiJSUzI1NiIsImtpZCI6Ii1BcXBoMzcxVjhVbS1aZ3lJOUhDd0tsbXFrVSIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYW1lcmExIiwiYXVkIjpbImh0dHBzOi8vOGNiNDI2ZDhiZmI0NDI3NGEwZmEyZDQ0NzRiOWZmNzcuZWRnZWFwaS53ZXN0dXMyLTIudmlkZW9hbmFseXplci5henVyZS5uZXQvZWRnZU1vZHVsZXMvY2FtZXJhMSJdLCJleHAiOjE2MjY3MDc4NzYsImlzcyI6Imh0dHBzOi8vd2VzdHVzMi0yLnZpZGVvYW5hbHl6ZXIuYXp1cmUubmV0LyIsInRva2VuVHlwZSI6IlByb3Zpc2lvbmluZ1Rva2VuIiwibW9kdWxlQXJtSWQiOiIvc3Vic2NyaXB0aW9ucy8zZDA3Y2ZiYy0xN2FhLTQxYjQtYmFhMS00ODhmZWY4NWExZDMvcmVzb3VyY2VHcm91cHMvRWRnZVZpZGVvQW5hbHl6ZXIuUGlwZWxpbmUvcHJvdmlkZXJzL01pY3Jvc29mdC5NZWRpYS92aWRlb0FuYWx5emVycy9ldmExL2VkZ2VNb2R1bGVzL2NhbWVyYTEiLCJtb2R1bGVJZCI6IjQ5MTIxYWNiLTIzN2ItNDY4Zi1iMDQ3LTI1MjFlYTlmM2NhYyJ9.I_GSjDTkMy2dZaP6j0cI9S4kSJ9KzmIBO_5Rw7GSuIuwy50satQTEMZqJXKWGGbxbb5MShr4A4HzCKd4EVhl2QyK6b7dDAeQNHjCE7lTWSadDUO4VHzg2oS91OqmAMJ1FMBNyUyU5D9-UDEQql9NMhJJ6TWQCess_v9c7OsAGmO3x9fphmBuiKCEQ7mDx9lvqP3czbvpMa_OAEqSEWQugIetiObqofaWAOkAZ4Ta5S4nOwIcl9Av6wlLfGByKK7vk-Nxt5YWBVNV5uzTtpwPbGgJqcETsMoxXIZLIC_JTcXzPKR58CrRdMlPQftCst2pEJBgU4CdKSJGDJSRe2cD6Q",
+        "provisioningToken": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImhtM1paUmZ6dF9EWDc1bzk1YUNHNjhHaV9xQSIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYW1lcmExIiwiYXVkIjpbImh0dHBzOi8vMWZkZDVlMDJhNTVhNDE5MDlhYjBmZTczNzM2ODZlOTguZWRnZWFwaS53ZXN0dXMyLTIudmlkZW9hbmFseXplci5henVyZS5uZXQvZWRnZU1vZHVsZXMvY2FtZXJhMSJdLCJleHAiOjE2MjY5NTk1ODEsImlzcyI6Imh0dHBzOi8vd2VzdHVzMi0yLnZpZGVvYW5hbHl6ZXIuYXp1cmUubmV0LyIsInRva2VuVHlwZSI6IlByb3Zpc2lvbmluZ1Rva2VuIiwibW9kdWxlQXJtSWQiOiIvc3Vic2NyaXB0aW9ucy8zZDA3Y2ZiYy0xN2FhLTQxYjQtYmFhMS00ODhmZWY4NWExZDMvcmVzb3VyY2VHcm91cHMvRWRnZVZpZGVvQW5hbHl6ZXIuUGlwZWxpbmUvcHJvdmlkZXJzL01pY3Jvc29mdC5NZWRpYS92aWRlb0FuYWx5emVycy9ldmExL2VkZ2VNb2R1bGVzL2NhbWVyYTEiLCJtb2R1bGVJZCI6ImUyNTYzY2E3LWFiOTktNDM5Ny05MGM2LThkZGEyYmZhZjgxZiJ9.nS0l32SLjSvBST0T5paSU4wFwfSeKJYIEbOdCGQikgCaARtnY7Vah-E4uYF2xmoZxjElkkPk-xdw3sHWeXX_RsOH_MxLS1B82wRMFtJOd4KGAV-MY8ptm0rMTcPi6K3G8oLRH1kdL4oP8h4e0KVnSsOXd0svJxCQSzAF7VmSG0fCyjzLP2Rtefk-tXMXwAwVAg9iDGIzPUZfm0QbO7azYd28AWnXxp4bkov_rvkzW5Qgx4FPxr20Glg-QsUE4zZSLitbhimX61ERiTV7ugB7Vq-Bma0XJbiFwc2Gx_0EI5fbgjyltGJ4CW3euQ-sosAZNe_VRVEvSGKSfHoiZe7gwg",
         "applicationDataDirectory": "/var/lib/videoanalyzer",
         "diagnosticsEventsOutputName": "diagnostics",
         "operationalEventsOutputName": "operational",

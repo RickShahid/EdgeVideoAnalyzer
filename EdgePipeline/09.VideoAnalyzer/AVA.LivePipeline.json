@@ -1,0 +1,22 @@
+{
+  "@apiVersion": "1.0",
+  "name": "Camera1",
+  "properties": {
+    "topologyName": "EVR-Motion",
+    "description": "",
+    "parameters": [
+      {
+        "name": "rtspUrl",
+        "value": "rtsp://192.168.254.32/axis-media/media.amp?camera=2"
+      },
+      {
+        "name": "rtspUserName",
+        "value": "root"
+      },
+      {
+        "name": "rtspPassword",
+        "value": "gbbamstsp.Net1"
+      }
+    ]
+  }
+}
