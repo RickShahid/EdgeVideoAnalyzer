@@ -180,7 +180,7 @@ $iotDeviceProvisioning = $resourceDeployment.properties.outputs.iotDeviceProvisi
 $iotDeviceEnrollmentGroupId = "cameras"
 $iotDeviceEnrollmentGroupExists = ((az iot dps enrollment-group list --resource-group $resourceGroupName --dps-name $iotDeviceProvisioning.name --query "[?enrollmentGroupId=='$iotDeviceEnrollmentGroupId']") | ConvertFrom-Json).Count -gt 0
 if (!$iotDeviceEnrollmentGroupExists) {
-  $iotDeviceEnrollmentGroup = (az iot dps enrollment-group create --resource-group $resourceGroupName --dps-name $iotDeviceProvisioning.name --enrollment-id $enrollmentGroupId --edge-enabled) | ConvertFrom-Json
+  $iotDeviceEnrollmentGroup = (az iot dps enrollment-group create --resource-group $resourceGroupName --dps-name $iotDeviceProvisioning.name --enrollment-id $iotDeviceEnrollmentGroupId --edge-enabled) | ConvertFrom-Json
 }
 
 New-TraceMessage $moduleName $true

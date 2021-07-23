@@ -12,7 +12,7 @@
         "eventHub": {
           "partitionCount": 4,
           "dataRetentionDays": 7,
-          "consumerGroupName": "videoAnalyzer"
+          "consumerGroupName": "tsi"
         },
         "keyName": "iothubowner",
         "enablePrivateNetworking": false,
