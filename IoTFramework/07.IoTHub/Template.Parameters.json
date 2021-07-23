@@ -15,7 +15,14 @@
           "consumerGroupName": "videoAnalyzer"
         },
         "keyName": "iothubowner",
-        "enablePrivateNetworking": false
+        "enablePrivateNetworking": false,
+        "enableMonitorDiagnostics": true
+      }
+    },
+    "logAnalytics": {
+      "value": {
+        "name": "eva1",
+        "resourceGroupName": "EdgeVideoAnalyzer"
       }
     },
     "managedIdentity": {

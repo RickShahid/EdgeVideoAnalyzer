@@ -9,9 +9,9 @@ sudo mkdir -p /home/localedgeuser
 sudo chown -R localedgeuser:localedgegroup /home/localedgeuser/
 
 # set up folders for use by the Video Analyzer module
-sudo mkdir -p /var/lib/videoanalyzer 
+sudo mkdir -p /var/lib/videoanalyzer
 sudo chown -R localedgeuser:localedgegroup /var/lib/videoanalyzer/
-sudo mkdir -p /var/lib/videoanalyzer/tmp/ 
+sudo mkdir -p /var/lib/videoanalyzer/tmp/
 sudo chown -R localedgeuser:localedgegroup /var/lib/videoanalyzer/tmp/
 sudo mkdir -p /var/lib/videoanalyzer/logs
 sudo chown -R localedgeuser:localedgegroup /var/lib/videoanalyzer/logs

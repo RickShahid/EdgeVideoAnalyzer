@@ -5,6 +5,9 @@
     "iotHub": {
       "type": "object"
     },
+    "logAnalytics": {
+      "type": "object"
+    },
     "managedIdentity": {
       "type": "object"
     },
@@ -18,6 +21,7 @@
   "variables": {
     "iotHubApiVersion": "2021-03-31",
     "iotSecurityApiVersion": "2019-08-01",
+    "diagnosticSettingApiVersion": "2021-05-01-preview",
     "resourceDeploymentApiVersion": "2021-01-01",
     "timeSeriesInsightApiVersion": "2020-05-15",
     "networkApiVersion": "2021-03-01",
@@ -69,6 +73,82 @@
           }
         },
         "publicNetworkAccess": "[if(parameters('iotHub').enablePrivateNetworking, 'Disabled', 'Enabled')]"
+      }
+    },
+    {
+      "condition": "[parameters('iotHub').enableMonitorDiagnostics]",
+      "type": "Microsoft.Devices/iotHubs/providers/diagnosticSettings",
+      "name": "[concat(parameters('iotHub').name, '/Microsoft.Insights/diagnostics')]",
+      "apiVersion": "[variables('diagnosticSettingApiVersion')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Devices/iotHubs', parameters('iotHub').name)]"
+      ],
+      "properties": {
+        "workspaceId": "[resourceId(parameters('logAnalytics').resourceGroupName, 'Microsoft.OperationalInsights/workspaces', parameters('logAnalytics').name)]",
+        "logs": [
+          {
+            "category": "Connections",
+            "enabled": true
+          },
+          {
+            "category": "DeviceTelemetry",
+            "enabled": true
+          },
+          {
+            "category": "C2DCommands",
+            "enabled": true
+          },
+          {
+            "category": "DeviceIdentityOperations",
+            "enabled": true
+          },
+          {
+            "category": "FileUploadOperations",
+            "enabled": true
+          },
+          {
+            "category": "Routes",
+            "enabled": true
+          },
+          {
+            "category": "D2CTwinOperations",
+            "enabled": true
+          },
+          {
+            "category": "C2DTwinOperations",
+            "enabled": true
+          },
+          {
+            "category": "TwinQueries",
+            "enabled": true
+          },
+          {
+            "category": "JobsOperations",
+            "enabled": true
+          },
+          {
+            "category": "DirectMethods",
+            "enabled": true
+          },
+          {
+            "category": "DistributedTracing",
+            "enabled": true
+          },
+          {
+            "category": "Configurations",
+            "enabled": true
+          },
+          {
+            "category": "DeviceStreams",
+            "enabled": true
+          }
+        ],
+        "metrics": [
+          {
+            "category": "AllMetrics",
+            "enabled": true
+          }
+        ]
       }
     },
     {

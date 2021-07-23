@@ -8,6 +8,21 @@ Import-Module "$scriptRoot/SharedServices/Functions.psm1"
 
 $modulePath = "$scriptRoot/SharedServices"
 
+# 00.MonitorTelemetry
+$moduleName = "00.MonitorTelemetry"
+New-TraceMessage $moduleName $false
+
+$templateResourcesPath = "$modulePath/00.MonitorTelemetry/Template.json"
+$templateParametersPath = "$modulePath/00.MonitorTelemetry/Template.Parameters.json"
+
+$resourceGroupName = Set-ResourceGroup $regionName $resourceGroupPrefix ""
+
+$resourceDeployment = (az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file $templateResourcesPath --parameters $templateParametersPath) | ConvertFrom-Json
+$logAnalytics = $resourceDeployment.properties.outputs.logAnalytics.value
+$appInsights = $resourceDeployment.properties.outputs.appInsights.value
+
+New-TraceMessage $moduleName $true
+
 # 01.VirtualNetwork
 $moduleName = "01.VirtualNetwork"
 New-TraceMessage $moduleName $false
@@ -125,6 +140,9 @@ New-TraceMessage $moduleName $false
 $templateResourcesPath = "$modulePath/07.IoTHub/Template.json"
 $templateParametersPath = "$modulePath/07.IoTHub/Template.Parameters.json"
 
+Set-TemplateParameter $templateParametersPath "logAnalytics" "name" $logAnalytics.name
+Set-TemplateParameter $templateParametersPath "logAnalytics" "resourceGroupName" $logAnalytics.resourceGroupName
+
 Set-TemplateParameter $templateParametersPath "managedIdentity" "name" $managedIdentity.name
 Set-TemplateParameter $templateParametersPath "managedIdentity" "resourceGroupName" $managedIdentity.resourceGroupName
 
@@ -159,7 +177,11 @@ $resourceGroupName = Set-ResourceGroup $regionName $resourceGroupPrefix ".Device
 $resourceDeployment = (az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file $templateResourcesPath --parameters $templateParametersPath) | ConvertFrom-Json
 $iotDeviceProvisioning = $resourceDeployment.properties.outputs.iotDeviceProvisioning.value
 
-$iotDeviceEnrollmentGroup = (az iot dps enrollment-group create --resource-group $resourceGroupName --dps-name $iotDeviceProvisioning.name --enrollment-id "cameras" --edge-enabled) | ConvertFrom-Json
+$iotDeviceEnrollmentGroupId = "cameras"
+$iotDeviceEnrollmentGroupExists = ((az iot dps enrollment-group list --resource-group $resourceGroupName --dps-name $iotDeviceProvisioning.name --query "[?enrollmentGroupId=='$iotDeviceEnrollmentGroupId']") | ConvertFrom-Json).Count -gt 0
+if (!$iotDeviceEnrollmentGroupExists) {
+  $iotDeviceEnrollmentGroup = (az iot dps enrollment-group create --resource-group $resourceGroupName --dps-name $iotDeviceProvisioning.name --enrollment-id $enrollmentGroupId --edge-enabled) | ConvertFrom-Json
+}
 
 New-TraceMessage $moduleName $true
 

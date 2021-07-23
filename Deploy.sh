@@ -8,6 +8,21 @@ source "$scriptRoot/SharedServices/Functions.sh"
 
 modulePath="$scriptRoot/SharedServices"
 
+# 00.MonitorTelemetry
+moduleName="00.MonitorTelemetry"
+New-TraceMessage $moduleName false
+
+templateResourcesPath="$modulePath/00.MonitorTelemetry/Template.json"
+templateParametersPath="$modulePath/00.MonitorTelemetry/Template.Parameters.json"
+
+resourceGroupName=$(Set-ResourceGroup $regionName $resourceGroupPrefix "")
+
+resourceDeployment=$(az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file "$templateResourcesPath" --parameters "$templateParametersPath")
+logAnalytics=$(Get-PropertyValue "$resourceDeployment" .properties.outputs.logAnalytics.value false)
+appInsights=$(Get-PropertyValue "$resourceDeployment" .properties.outputs.appInsights.value false)
+
+New-TraceMessage $moduleName true
+
 # 01.VirtualNetwork
 moduleName="01.VirtualNetwork"
 New-TraceMessage $moduleName false
@@ -133,6 +148,11 @@ New-TraceMessage $moduleName false
 templateResourcesPath="$modulePath/07.IoTHub/Template.json"
 templateParametersPath="$modulePath/07.IoTHub/Template.Parameters.json"
 
+logAnalyticsName=$(Get-PropertyValue "$logAnalytics" .name false)
+logAnalyticsResourceGroupName=$(Get-PropertyValue "$logAnalytics" .resourceGroupName false)
+Set-TemplateParameter $templateParametersPath "logAnalytics" "name" $logAnalyticsName
+Set-TemplateParameter $templateParametersPath "logAnalytics" "resourceGroupName" $logAnalyticsResourceGroupName
+
 managedIdentityName=$(Get-PropertyValue "$managedIdentity" .name false)
 managedIdentityResourceGroupName=$(Get-PropertyValue "$managedIdentity" .resourceGroupName false)
 Set-TemplateParameter $templateParametersPath "managedIdentity" "name" $managedIdentityName
@@ -178,7 +198,12 @@ resourceDeployment=$(az deployment group create --name $moduleName --resource-gr
 iotDeviceProvisioning=$(Get-PropertyValue "$resourceDeployment" .properties.outputs.iotDeviceProvisioning.value false)
 
 iotDeviceProvisioningName=$(Get-PropertyValue "$iotDeviceProvisioning" .name false)
-iotDeviceEnrollmentGroup=$(az iot dps enrollment-group create --resource-group $resourceGroupName --dps-name $iotDeviceProvisioningName --enrollment-id "cameras" --edge-enabled)
+
+iotDeviceEnrollmentGroupId="cameras"
+iotDeviceEnrollmentGroupExists=$(az iot dps enrollment-group list --resource-group $resourceGroupName --dps-name $iotDeviceProvisioningName --query "[?enrollmentGroupId=='$iotDeviceEnrollmentGroupId']" | jq '. | length')
+if [ "$iotDeviceEnrollmentGroupExists" != "1" ]; then
+  iotDeviceEnrollmentGroup=$(az iot dps enrollment-group create --resource-group $resourceGroupName --dps-name $iotDeviceProvisioningName --enrollment-id "$iotDeviceEnrollmentGroupId" --edge-enabled)
+fi
 
 New-TraceMessage $moduleName true
 
