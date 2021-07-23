@@ -39,3 +39,9 @@ function Set-TemplateParameter ($templateParametersPath, $objectName, $propertyN
   }
   $templateParameters | ConvertTo-Json -Depth 10 | Out-File $templateParametersPath
 }
+
+function Set-ProvisioningToken ($iotEdgeConfigPath, $provisioningToken) {
+  $iotEdgeConfig = Get-Content -Path $iotEdgeConfigPath -Raw | ConvertFrom-Json
+  $iotEdgeConfig.modulesContent.avaedge."properties.desired".provisioningToken = $provisioningToken
+  $iotEdgeConfig | ConvertTo-Json -Depth 10 | Out-File $iotEdgeConfigPath
+}

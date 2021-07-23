@@ -13,11 +13,18 @@
     },
     "storageAccounts": {
       "type": "array"
+    },
+    "baseTime": {
+      "type": "string",
+      "defaultValue": "[utcNow('u')]"
     }
   },
   "variables": {
+    "keyVaultApiVersion": "2021-04-01-preview",
     "videoAnalyzerApiVersion": "2021-05-01-preview",
-    "keyVaultApiVersion": "2021-04-01-preview"
+    "videoAnalyzerProvisioningToken": {
+      "expirationDate": "[dateTimeAdd(parameters('baseTime'), 'P7D', 'yyyy-MM-ddTHH:mm:ss+00:00')]"
+    }
   },
   "functions": [
     {
@@ -97,7 +104,8 @@
       "value": {
         "name": "[parameters('videoAnalyzer').name]",
         "resourceGroupName": "[resourceGroup().name]",
-        "endpoints": "[reference(resourceId('Microsoft.Media/videoAnalyzers', parameters('videoAnalyzer').name), variables('videoAnalyzerApiVersion')).endpoints]"
+        "endpoints": "[reference(resourceId('Microsoft.Media/videoAnalyzers', parameters('videoAnalyzer').name), variables('videoAnalyzerApiVersion')).endpoints]",
+        "provisioningToken": "[listProvisioningToken(resourceId('Microsoft.Media/videoAnalyzers/edgeModules', parameters('videoAnalyzer').name, parameters('videoAnalyzer').edgeModules[0].name), variables('videoAnalyzerApiVersion'), variables('videoAnalyzerProvisioningToken')).token]"
       }
     }
   }

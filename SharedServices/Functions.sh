@@ -10,6 +10,14 @@ function New-TraceMessage {
   echo "$traceMessage $moduleName"
 }
 
+function Get-PropertyValue {
+  objectData=$1
+  propertyFilter=$2
+  disableRawOutput=$3
+  jqOptions=$([ "$disableRawOutput" == true ] && echo "-c" || echo "-cr")
+  echo $(echo "$objectData" | jq $jqOptions $propertyFilter)
+}
+
 function Set-ResourceGroup {
   regionName=$1
   resourceGroupNamePrefix=$2
@@ -55,10 +63,9 @@ function Set-TemplateParameter {
   echo "$templateParameters" > $templateParametersPath
 }
 
-function Get-PropertyValue {
-  objectData=$1
-  propertyFilter=$2
-  disableRawOutput=$3
-  jqOptions=$([ "$disableRawOutput" == true ] && echo "-c" || echo "-cr")
-  echo $(echo "$objectData" | jq $jqOptions $propertyFilter)
+function Set-ProvisioningToken {
+  iotEdgeConfigPath=$1
+  provisioningToken=$2
+  iotEdgeConfig=$(jq .modulesContent.avaedge'."properties.desired"'.provisioningToken=$provisioningToken $iotEdgeConfigPath)
+  echo "$iotEdgeConfig" > $iotEdgeConfigPath
 }

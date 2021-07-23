@@ -12,8 +12,8 @@ $modulePath = "$scriptRoot/SharedServices"
 $moduleName = "00.MonitorTelemetry"
 New-TraceMessage $moduleName $false
 
-$templateResourcesPath = "$modulePath/00.MonitorTelemetry/Template.json"
-$templateParametersPath = "$modulePath/00.MonitorTelemetry/Template.Parameters.json"
+$templateResourcesPath = "$modulePath/$moduleName/Template.json"
+$templateParametersPath = "$modulePath/$moduleName/Template.Parameters.json"
 
 $resourceGroupName = Set-ResourceGroup $regionName $resourceGroupPrefix ""
 
@@ -27,8 +27,8 @@ New-TraceMessage $moduleName $true
 $moduleName = "01.VirtualNetwork"
 New-TraceMessage $moduleName $false
 
-$templateResourcesPath = "$modulePath/01.VirtualNetwork/Template.json"
-$templateParametersPath = "$modulePath/01.VirtualNetwork/Template.Parameters.json"
+$templateResourcesPath = "$modulePath/$moduleName/Template.json"
+$templateParametersPath = "$modulePath/$moduleName/Template.Parameters.json"
 
 $resourceGroupName = Set-ResourceGroup $regionName $resourceGroupPrefix ".Network"
 
@@ -41,8 +41,8 @@ New-TraceMessage $moduleName $true
 $moduleName = "02.ManagedIdentity"
 New-TraceMessage $moduleName $false
 
-$templateResourcesPath = "$modulePath/02.ManagedIdentity/Template.json"
-$templateParametersPath = "$modulePath/02.ManagedIdentity/Template.Parameters.json"
+$templateResourcesPath = "$modulePath/$moduleName/Template.json"
+$templateParametersPath = "$modulePath/$moduleName/Template.Parameters.json"
 
 $resourceGroupName = Set-ResourceGroup $regionName $resourceGroupPrefix ""
 
@@ -55,8 +55,8 @@ New-TraceMessage $moduleName $true
 $moduleName = "03.KeyVault"
 New-TraceMessage $moduleName $false
 
-$templateResourcesPath = "$modulePath/03.KeyVault/Template.json"
-$templateParametersPath = "$modulePath/03.KeyVault/Template.Parameters.json"
+$templateResourcesPath = "$modulePath/$moduleName/Template.json"
+$templateParametersPath = "$modulePath/$moduleName/Template.Parameters.json"
 
 $currentUser = (az ad signed-in-user show) | ConvertFrom-Json
 Set-TemplateParameter $templateParametersPath "keyVault" "roleAssignments.principalId" $currentUser.objectId 0
@@ -77,8 +77,8 @@ New-TraceMessage $moduleName $true
 $moduleName = "04.NetworkGateway"
 New-TraceMessage $moduleName $false
 
-$templateResourcesPath = "$modulePath/04.NetworkGateway/Template.json"
-$templateParametersPath = "$modulePath/04.NetworkGateway/Template.Parameters.json"
+$templateResourcesPath = "$modulePath/$moduleName/Template.json"
+$templateParametersPath = "$modulePath/$moduleName/Template.Parameters.json"
 
 Set-TemplateParameter $templateParametersPath "networkGateway" "name" $virtualNetwork.name
 
@@ -101,8 +101,8 @@ $modulePath = "$scriptRoot/IoTFramework"
 $moduleName = "05.StorageAccount"
 New-TraceMessage $moduleName $false
 
-$templateResourcesPath = "$modulePath/05.StorageAccount/Template.json"
-$templateParametersPath = "$modulePath/05.StorageAccount/Template.Parameters.json"
+$templateResourcesPath = "$modulePath/$moduleName/Template.json"
+$templateParametersPath = "$modulePath/$moduleName/Template.Parameters.json"
 
 Set-TemplateParameter $templateParametersPath "roleAssignments" "principalId" $managedIdentity.principalId 0 $true
 Set-TemplateParameter $templateParametersPath "roleAssignments" "principalId" $managedIdentity.principalId 1 $true
@@ -121,8 +121,8 @@ New-TraceMessage $moduleName $true
 $moduleName = "06.TimeSeriesInsights"
 New-TraceMessage $moduleName $false
 
-$templateResourcesPath = "$modulePath/06.TimeSeriesInsights/Template.json"
-$templateParametersPath = "$modulePath/06.TimeSeriesInsights/Template.Parameters.json"
+$templateResourcesPath = "$modulePath/$moduleName/Template.json"
+$templateParametersPath = "$modulePath/$moduleName/Template.Parameters.json"
 
 Set-TemplateParameter $templateParametersPath "storageAccount" "name" $storageAccount.name
 
@@ -137,8 +137,8 @@ New-TraceMessage $moduleName $true
 $moduleName = "07.IoTHub"
 New-TraceMessage $moduleName $false
 
-$templateResourcesPath = "$modulePath/07.IoTHub/Template.json"
-$templateParametersPath = "$modulePath/07.IoTHub/Template.Parameters.json"
+$templateResourcesPath = "$modulePath/$moduleName/Template.json"
+$templateParametersPath = "$modulePath/$moduleName/Template.Parameters.json"
 
 Set-TemplateParameter $templateParametersPath "logAnalytics" "name" $logAnalytics.name
 Set-TemplateParameter $templateParametersPath "logAnalytics" "resourceGroupName" $logAnalytics.resourceGroupName
@@ -163,8 +163,8 @@ New-TraceMessage $moduleName $true
 $moduleName = "08.IoTDevice"
 New-TraceMessage $moduleName $false
 
-$templateResourcesPath = "$modulePath/08.IoTDevice/Template.json"
-$templateParametersPath = "$modulePath/08.IoTDevice/Template.Parameters.json"
+$templateResourcesPath = "$modulePath/$moduleName/Template.json"
+$templateParametersPath = "$modulePath/$moduleName/Template.Parameters.json"
 
 Set-TemplateParameter $templateParametersPath "iotHub" "name" $iotHub.name
 Set-TemplateParameter $templateParametersPath "iotHub" "resourceGroupName" $iotHub.resourceGroupName
@@ -191,8 +191,8 @@ $modulePath = "$scriptRoot/EdgePipeline"
 $moduleName = "09.VideoAnalyzer"
 New-TraceMessage $moduleName $false
 
-$templateResourcesPath = "$modulePath/09.VideoAnalyzer/Template.json"
-$templateParametersPath = "$modulePath/09.VideoAnalyzer/Template.Parameters.json"
+$templateResourcesPath = "$modulePath/$moduleName/Template.json"
+$templateParametersPath = "$modulePath/$moduleName/Template.Parameters.json"
 
 Set-TemplateParameter $templateParametersPath "managedIdentity" "name" $managedIdentity.name
 Set-TemplateParameter $templateParametersPath "managedIdentity" "resourceGroupName" $managedIdentity.resourceGroupName
@@ -208,14 +208,17 @@ $resourceGroupName = Set-ResourceGroup $regionName $resourceGroupPrefix ".Pipeli
 $resourceDeployment = (az deployment group create --name $moduleName --resource-group $resourceGroupName --template-file $templateResourcesPath --parameters $templateParametersPath) | ConvertFrom-Json
 $videoAnalyzer = $resourceDeployment.properties.outputs.videoAnalyzer.value
 
+$iotEdgeConfigPath = "$modulePath/$moduleName/IoTEdge.json"
+Set-ProvisioningToken $iotEdgeConfigPath $videoAnalyzer.provisioningToken
+
 New-TraceMessage $moduleName $true
 
 # 10.MediaServices
 $moduleName = "10.MediaServices"
 New-TraceMessage $moduleName $false
 
-$templateResourcesPath = "$modulePath/10.MediaServices/Template.json"
-$templateParametersPath = "$modulePath/10.MediaServices/Template.Parameters.json"
+$templateResourcesPath = "$modulePath/$moduleName/Template.json"
+$templateParametersPath = "$modulePath/$moduleName/Template.Parameters.json"
 
 Set-TemplateParameter $templateParametersPath "storageAccounts" "name" $storageAccount.name 0 $true
 Set-TemplateParameter $templateParametersPath "storageAccounts" "resourceGroupName" $storageAccount.resourceGroupName 0 $true

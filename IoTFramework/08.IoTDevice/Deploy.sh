@@ -19,6 +19,11 @@ resourceDeployment=$(az deployment group create --name $moduleName --resource-gr
 iotDeviceProvisioning=$(Get-PropertyValue "$resourceDeployment" .properties.outputs.iotDeviceProvisioning.value false)
 
 iotDeviceProvisioningName=$(Get-PropertyValue "$iotDeviceProvisioning" .name false)
-iotDeviceEnrollmentGroup=$(az iot dps enrollment-group create --resource-group $resourceGroupName --dps-name $iotDeviceProvisioningName --enrollment-id "cameras" --edge-enabled)
+
+iotDeviceEnrollmentGroupId="cameras"
+iotDeviceEnrollmentGroupExists=$(az iot dps enrollment-group list --resource-group $resourceGroupName --dps-name $iotDeviceProvisioningName --query "[?enrollmentGroupId=='$iotDeviceEnrollmentGroupId']" | jq '. | length')
+if [ "$iotDeviceEnrollmentGroupExists" != "1" ]; then
+  iotDeviceEnrollmentGroup=$(az iot dps enrollment-group create --resource-group $resourceGroupName --dps-name $iotDeviceProvisioningName --enrollment-id "$iotDeviceEnrollmentGroupId" --edge-enabled)
+fi
 
 New-TraceMessage $moduleName true
