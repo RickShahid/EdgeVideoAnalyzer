@@ -71,6 +71,6 @@ The Edge Video Analyzer solution is composed from the following Microsoft Azure 
 
 For more information, contact Rick Shahid (rick.shahid@microsoft.com)
 
-# Test Heading
+## Test Heading
 
 TBD
